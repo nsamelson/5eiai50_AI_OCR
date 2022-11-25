@@ -1,0 +1,6 @@
+ionic
+tensorflow
+numpy
+opencv-python
+flask
+venv
