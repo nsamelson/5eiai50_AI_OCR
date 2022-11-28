@@ -75,6 +75,10 @@ model.fit(  x_train, y_train,
             validation_data = (x_val, y_val), 
             steps_per_epoch = x_train.shape[0] // batch_size)
 
+# evaluate the model
+scores = model.evaluate(x_test,y_test, verbose=0)
+print("CNN Score:",scores[1])
+
 # save the model
 model.save('backend/models/handDigits.model')
 
