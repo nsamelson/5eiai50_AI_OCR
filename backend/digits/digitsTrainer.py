@@ -5,10 +5,7 @@ from sklearn.model_selection import train_test_split
 
 from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPool2D
 from keras.models import Sequential
-from keras.preprocessing.image import ImageDataGenerator
-from keras.callbacks import ReduceLROnPlateau
 
-import os
 
 # sources
 # https://www.youtube.com/watch?v=bte8Er0QhDg
@@ -48,21 +45,9 @@ model.add(Dense(256, activation = "relu"))
 model.add(Dropout(0.5))
 model.add(Dense(10, activation = "softmax"))
 
-# Simple MLP model [784,256,128,10]
-# model.add(Flatten(input_shape=(28,28)))
-# model.add(Dense(256, activation = "relu"))
-# model.add(Dense(128, activation = "relu"))
-# model.add(Dense(10, activation = "softmax"))
-
 # Compile the model
 model.compile(optimizer="adam",loss="sparse_categorical_crossentropy", metrics=['accuracy'])
 
-# Set a learning rate annealer
-learning_rate_reduction = ReduceLROnPlateau(monitor='val_accuracy', 
-                                            patience=3, 
-                                            verbose=1, 
-                                            factor=0.5, 
-                                            min_lr=0.00001)
 
 # Parameters to train the model
 epochs = 5 # iterations to go through the entire model
