@@ -14,3 +14,6 @@ AI project to transcript written characters into text
 
 ## Run the app
 In order to be able to access the backend from external devices on the same local network, run the command ```ionic serve --external``` from ```\frontend``` folder
+
+## Sources
+- https://www.kaggle.com/code/zadiyounes/text-detection/notebook
