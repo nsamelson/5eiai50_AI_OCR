@@ -50,7 +50,7 @@ model.compile(optimizer="adam",loss="sparse_categorical_crossentropy", metrics=[
 
 
 # Parameters to train the model
-epochs = 5 # iterations to go through the entire model
+epochs = 1 # iterations to go through the entire model
 batch_size = 86 # number of samples per batch
 
 
