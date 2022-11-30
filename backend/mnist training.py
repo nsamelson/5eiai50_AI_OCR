@@ -5,6 +5,8 @@ from tensorflow.keras.datasets import mnist
 
 
 def load_mnist_dataset():
+  
+  print('Loading mnist dataset...')
 
   # load data from tensorflow framework
   ((trainData, trainLabels), (testData, testLabels)) = mnist.load_data() 
@@ -19,6 +21,8 @@ def load_mnist_dataset():
   return (data, labels)
 
 def load_az_dataset(datasetPath):
+  
+  print('Loading A_Z dataset...')
 
   # List for storing data
   data = []
@@ -94,3 +98,4 @@ classWeight = {}
 # loop over all classes and calculate the class weight
 for i in range(0, len(classTotals)):
   classWeight[i] = classTotals.max() / classTotals[i]
+
