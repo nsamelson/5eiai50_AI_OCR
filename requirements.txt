@@ -1,6 +1,8 @@
-ionic
-tensorflow
+flask
+keras
 numpy
 opencv-python
-flask
+pandas
+scikit-learn
+tensorflow
 venv
