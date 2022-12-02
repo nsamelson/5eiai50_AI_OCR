@@ -17,3 +17,4 @@ In order to be able to access the backend from external devices on the same loca
 
 ## Sources
 - https://www.kaggle.com/code/zadiyounes/text-detection/notebook
+- https://learn.microsoft.com/en-us/windows/ai/directml/gpu-tensorflow-wsl
