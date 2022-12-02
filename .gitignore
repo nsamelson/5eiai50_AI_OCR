@@ -1,2 +1,3 @@
 .vscode
-backend/training/*
+backend/training/printed
+# backend/training/*
