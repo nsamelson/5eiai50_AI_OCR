@@ -1,4 +1,3 @@
 .vscode
-backend/training/printed
 backend/training/*
-backend/training/digitsAndChars.csv
+
