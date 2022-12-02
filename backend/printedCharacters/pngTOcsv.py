@@ -33,8 +33,9 @@ for image in os.listdir(f"backend/training/printed/"):
     arr = np.asarray(img)
 
     # 3. find the label of the character
-    name = image.split("_")
-    label = labels.index(name[1])
+    name = image.split("_")[-1].split(".")[0]
+    label = labels.index(name)
+
 
     lst = []
     lst.append(str(label))

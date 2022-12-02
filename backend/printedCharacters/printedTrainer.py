@@ -43,16 +43,17 @@ x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size = 
 model = Sequential()
 
 # CNN architechture : In -> [[Conv2D->relu]*2 -> MaxPool2D -> Dropout]*2 -> Flatten -> Dense -> Dropout -> Out
+
 model.add(Flatten(input_shape=(28,28)))
-model.add(Dense(500, activation = "relu"))
 model.add(Dense(256, activation = "relu"))
+model.add(Dense(128, activation = "relu"))
 model.add(Dense(62, activation = "softmax"))
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 # Parameters to train the model
 epochs = 30 # iterations to go through the entire model
-batch_size = 5 # number of samples per batch
+batch_size = 12 # number of samples per batch
 
 
 # train the model
