@@ -6,10 +6,11 @@ import numpy as np
 import os
 import glob
 
-fontSize = 20
+fontSize = 22
 imgSize = (28,28)
 position = (0,0)
 
+# https://tanmayshah2015.wordpress.com/2015/12/01/synthetic-font-dataset-generation/
 #All images will be stored in 'Synthetic_dataset' directory under current directory
 # dataset_path = os.path.join (os.getcwd(), 'Synthetic_dataset')
 dataset_path = "backend/training/printed/"
@@ -48,28 +49,36 @@ for sys_font in all_fonts:
         #Check desired font
         if f_lower in s_lower:
             path = sys_font
-            font = ImageFont.truetype(path, fontSize)
+            # r_size = random.randrange(-2,2) * 2 # gives a fontsize of 18,20,22 or 24
+            # font = ImageFont.truetype(path, fontSize + r_size)
             f_flag[f_idx] = 1
             for ch in all_char_list:
-                image = Image.new("RGB", imgSize, (255,255,255))
-                draw = ImageDraw.Draw(image)
-                pos_x = random.randrange(7,14)
-                pos_y = random.randrange(0,7)
-                pos_idx=0
-                for y in [pos_y-1, pos_y, pos_y+1]:
-                    for x in [pos_x-1, pos_x, pos_x+1]:
-                        position = (x,y)
-                        draw.text(position, ch, (0,0,0), font=font)
-                        ##without this flag, it creates 'Calibri_a.jpg' even for 'Calibri_A.jpg'
-                        ##which overwrites lowercase images
-                        l_u_d_flag = "u"
-                        if ch.islower():
-                            l_u_d_flag = "l"
-                        elif ch.isdigit():
-                            l_u_d_flag = "d"
-                        file_name = font_file + '_' + l_u_d_flag + '_' + str(pos_idx) + '_' + ch + '.png'
-                        file_name = os.path.join(dataset_path,file_name)
-                        image.save(file_name)
-                        pos_idx = pos_idx + 1
+                for a in range(10):
+                    r_size = random.randrange(-2,2) * 2 # gives a fontsize of 18,20,22 or 24
+                    font = ImageFont.truetype(path, fontSize + r_size)
+                    image = Image.new("L", imgSize,255)
+                    draw = ImageDraw.Draw(image)
+                    pos_x = random.randrange(3,8)
+                    pos_y = random.randrange(0,3)
+                    shift_x = random.randrange(-1,5)
+                    shift_y = random.randrange(-2,4)
+                    # pos_x = 0
+                    # pos_y = 0
+                    pos_idx=0
+                    for y in range(pos_y,pos_y+2):
+                        for x in range(pos_x,pos_x+2):
+                            position = (x+shift_x,y+shift_y)
+                            draw.text(position, ch, 0, font=font)
+                            ##without this flag, it creates 'Calibri_a.jpg' even for 'Calibri_A.jpg'
+                            ##which overwrites lowercase images
+                            l_u_d_flag = "u"
+                            if ch.islower():
+                                l_u_d_flag = "l"
+                            elif ch.isdigit():
+                                l_u_d_flag = "d"
+                            file_name = font_file + '_' + l_u_d_flag + '_' + str(a) + '_'+ str(pos_idx) + '_' + ch + '.png'
+                            file_name = os.path.join(dataset_path,file_name)
+                            image.save(file_name)
+                            pos_idx = pos_idx + 1     
     f_idx = f_idx + 1
 
