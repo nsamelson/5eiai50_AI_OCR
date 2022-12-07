@@ -17,7 +17,7 @@
           </ion-card-header>
           <ion-row>
             <ion-col>
-              <ion-button >Open</ion-button>
+              <ion-button (click)="openModal(i)">Open</ion-button>
               <ion-button color="danger" (click)="deleteImage(i)">Delete</ion-button>
             </ion-col>
           </ion-row>
@@ -26,4 +26,27 @@
       </ion-col>
     </ion-row>
   </ion-grid>
+
+  <ion-modal (willDismiss)="onWillDismiss($event)">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="cancelModal()">Cancel</ion-button>
+          </ion-buttons>
+          <ion-title>Welcome</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="confirmModal()" [strong]="true">Confirm</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-img [src]="urlOfImg"  style="height: 100%;"></ion-img>
+      <!-- <ion-content class="ion-padding">
+        <ion-item>
+          <ion-label position="stacked">Enter your name</ion-label>
+          <ion-input type="text" placeholder="Your name" [(ngModel)]="name"></ion-input>
+        </ion-item>
+      </ion-content> -->
+    </ng-template>
+  </ion-modal>
 </ion-content>
