@@ -25,3 +25,10 @@
 #container a {
   text-decoration: none;
 }
+
+.card{
+  display:flex;
+  flex-flow: column;
+  width: 50vw;
+  left: calc(-25vw + 50%);
+}

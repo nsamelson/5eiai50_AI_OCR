@@ -14,7 +14,20 @@
   </ion-header>
 
   <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+
+    <ion-card class="card">
+      <ion-img [src]="uploadedImg"></ion-img>
+      <ion-card-header>
+        <ion-card-title><strong>Ready to import an image?</strong></ion-card-title>
+        <ion-card-subtitle>Select a file under the PNG or PDF format</ion-card-subtitle>
+      </ion-card-header>
+    
+      <ion-card-content>
+            <input type="file" accept="image/*" (change)="selectImage($event)">              
+      </ion-card-content>
+      <ion-button (click)="submitForm()">Submit</ion-button>     
+    </ion-card>
+    
+      
   </div>
 </ion-content>
