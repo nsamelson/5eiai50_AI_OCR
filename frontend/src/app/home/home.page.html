@@ -22,8 +22,16 @@
         <ion-card-subtitle>Select a file under the PNG or PDF format</ion-card-subtitle>
       </ion-card-header>
     
-      <ion-card-content>
-          <input type="file" accept="image/*" (change)="selectImage($event)">              
+      <ion-card-content >       
+        <ion-grid class="custom">
+          <ion-row class="ion-text-start"> <input type="file" accept="image/*" (change)="selectImage($event)"> </ion-row>
+            <ion-row class="ion-text-start">
+            <ion-item fill="solid" >
+              <ion-label position="floating">Select a name for your file</ion-label>
+              <ion-input type="text" placeholder="Your name" [(ngModel)]="imageName" ></ion-input>
+            </ion-item>  
+          </ion-row >
+        </ion-grid>
       </ion-card-content>
       <ion-button (click)="submitForm()">Submit</ion-button>
     </ion-card>

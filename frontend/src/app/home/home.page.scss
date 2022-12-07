@@ -29,6 +29,20 @@
 .card{
   display:flex;
   flex-flow: column;
-  width: 50vw;
-  left: calc(-25vw + 50%);
+  width: 70vw;
+  left: calc(-15vw + 30%);
+}
+
+.custom {
+
+  // --padding-end: 10%;
+  // --padding-start: 30%;
+  width:fit-content;
+  // left: calc(-15vw + 30%);
+  // text-align:cenet;
+  
+  // display:flex;
+  // text-align: center;
+  // align-items: center;
+  // align-content: center;
 }

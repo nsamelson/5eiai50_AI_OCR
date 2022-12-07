@@ -13,6 +13,7 @@ export class ImportedPage implements OnInit {
   urlList: string[] = [];
   imgRefList: string[] = [];
   urlOfImg: string | undefined;
+  imageName: string | undefined;
 
   @ViewChild(IonModal) modal: IonModal | undefined;
 
@@ -56,6 +57,7 @@ export class ImportedPage implements OnInit {
 
   openModal(index: any){
     this.urlOfImg = this.urlList[index];
+    this.imageName = this.imgRefList[index]
     this.modal?.present();
   }
 

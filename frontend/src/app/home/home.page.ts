@@ -14,6 +14,7 @@ export class HomePage {
   selectedFile: File | undefined;
   app: any;
   uploadedImg: String | undefined;
+  imageName: string | undefined;
 
   constructor(private toastController: ToastController) { 
     // this.app = initializeApp(environment.firebaseConfig);
@@ -22,19 +23,16 @@ export class HomePage {
   selectImage(event: any){
     this.selectedFile = event.target.files[0];
     console.log(this.selectedFile);   
-    
+    this.imageName = this.selectedFile!.name
   };
 
   async submitForm(){
     // Create a form data object using the FormData API
-    let formData = new FormData();
 
     // Add the file that was just added to the form data
     if(this.selectedFile != null){
-      formData.append("photo", this.selectedFile!, this.selectedFile!.name);
-      console.log(formData);
-
-      // this.http.post('http')
+      // formData.append("photo", this.selectedFile!, this.selectedFile!.name);
+      
       this.uploadImage(this.selectedFile)
     }
     else{
@@ -52,7 +50,7 @@ export class HomePage {
   async uploadImage(cameraFile: File) {
 
     const storage = getStorage();
-    const storageRef = ref(storage, "unprocessed/"+cameraFile.name);
+    const storageRef = ref(storage, "unprocessed/"+this.imageName);
     
     uploadBytes(storageRef, cameraFile).then((snapshot) => {
       console.log('Uploaded a blob or file!');
