@@ -9,6 +9,7 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { initializeApp  } from 'firebase/app';
 import { environment } from '../environments/environment';
+import { HttpClientModule } from '@angular/common/http';
 
 initializeApp(environment.firebaseConfig);
 
@@ -19,6 +20,7 @@ initializeApp(environment.firebaseConfig);
     BrowserModule, 
     IonicModule.forRoot(), 
     AppRoutingModule, 
+    HttpClientModule
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
