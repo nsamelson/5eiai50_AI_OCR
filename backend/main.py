@@ -5,13 +5,13 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-
+# TEST SERVER ONLY
 @app.route('/')
 def hello_world():
     response = jsonify({'some': 'data'})
     return response
 
-
+# PROCESS IMAGE INTO OCR
 @app.route('/process/', methods=['POST'])
 def processData():
     items = request.get_json()
@@ -29,8 +29,7 @@ def processData():
     response = jsonify({'success': 'The image has been processed!!!'})
     return response
 
-
-
+# GET LIST OF UNPROCESSED IMAGES
 
 
 

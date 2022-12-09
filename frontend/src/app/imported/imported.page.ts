@@ -45,7 +45,7 @@ export class ImportedPage implements OnInit {
           });
           
         });
-        console.log(this.urlList)
+        // console.log(this.urlList)
       }).catch((error) => {
         // Uh-oh, an error occurred!
       });
@@ -85,7 +85,11 @@ export class ImportedPage implements OnInit {
   // API CALL
 
   async processData() {
-    this.http.post('http://127.0.0.1:5000/process/',{
+
+    const hostname = window.location.hostname;
+    const url = `http://${hostname}:5000/process/`;
+
+    this.http.post(url,{
         img: this.imageName,
         url: this.urlOfImg
     },{}).subscribe((response) => {
