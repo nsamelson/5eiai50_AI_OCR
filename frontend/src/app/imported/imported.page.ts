@@ -15,7 +15,7 @@ export class ImportedPage implements OnInit {
   imgRefList: string[] = [];
   urlOfImg: string | undefined;
   imageName: string | undefined;
-  imageRef: string | undefined;
+  // imageRef: string | undefined;
   
   @ViewChild(IonModal) modal: IonModal | undefined;
   
@@ -63,7 +63,7 @@ export class ImportedPage implements OnInit {
   openModal(index: any){
     this.urlOfImg = this.urlList[index];
     this.imageName = this.imgRefList[index];
-    this.imageRef = this.imgRefList[index];
+    // this.imageRef = this.imgRefList[index];
     this.modal?.present();
   }
 
@@ -78,10 +78,6 @@ export class ImportedPage implements OnInit {
   onWillDismiss(event: Event) {
     const ev = event as CustomEvent<OverlayEventDetail<string>>;
     if (ev.detail.role === 'confirm') {
-      // this.message = `Hello, ${ev.detail.data}!`;
-      // console.log(ev.detail.data)
-      this.imageRef = "unprocessed/" + this.imageRef;
-      console.log(this.imageRef)
       this.processData()
     }
   }
@@ -89,13 +85,12 @@ export class ImportedPage implements OnInit {
   // API CALL
 
   async processData() {
-    // TODO: make a POST request so that I can send in a form the link of the image + dataparams
-    // try {
-    //   const response = await this.http.get('http://127.0.0.1:5000/');
-    //   console.log(response);
-    // } catch (error) {
-    //   console.error(error);
-    // }
+    this.http.post('http://127.0.0.1:5000/process/',{
+        img: this.imageName,
+        url: this.urlOfImg
+    },{}).subscribe((response) => {
+      console.log(response);
+    });
   }
 
 }
