@@ -19,7 +19,18 @@
     "@angular/platform-browser": "^14.0.0",
     "@angular/platform-browser-dynamic": "^14.0.0",
     "@angular/router": "^14.0.0",
+    "@awesome-cordova-plugins/file": "^6.2.0",
+    "@awesome-cordova-plugins/image-picker": "^6.2.0",
+    "@capacitor/app": "4.1.1",
+    "@capacitor/core": "4.6.1",
+    "@capacitor/haptics": "4.1.0",
+    "@capacitor/keyboard": "4.1.0",
+    "@capacitor/status-bar": "4.1.1",
     "@ionic/angular": "^6.1.9",
+    "cordova-plugin-camera": "^6.0.0",
+    "cordova-plugin-file": "^7.0.0",
+    "cordova-plugin-telerik-imagepicker": "^2.3.6",
+    "firebase": "^9.14.0",
     "ionicons": "^6.0.3",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
@@ -31,15 +42,17 @@
     "@angular-eslint/eslint-plugin": "^14.0.0",
     "@angular-eslint/eslint-plugin-template": "^14.0.0",
     "@angular-eslint/template-parser": "^14.0.0",
-    "@angular/cli": "^14.0.0",
+    "@angular/cli": "14.2.10",
     "@angular/compiler": "^14.0.0",
     "@angular/compiler-cli": "^14.0.0",
     "@angular/language-service": "^14.0.0",
+    "@capacitor/cli": "4.6.1",
     "@ionic/angular-toolkit": "^6.0.0",
     "@types/jasmine": "~4.0.0",
     "@types/node": "^12.11.1",
     "@typescript-eslint/eslint-plugin": "5.3.0",
     "@typescript-eslint/parser": "5.3.0",
+    "cordova-plugin-file-transfer": "^1.7.1",
     "eslint": "^7.6.0",
     "eslint-plugin-import": "2.22.1",
     "eslint-plugin-jsdoc": "30.7.6",
@@ -55,5 +68,12 @@
     "ts-node": "~8.3.0",
     "typescript": "~4.7.2"
   },
-  "description": "An Ionic project"
+  "description": "An Ionic project",
+  "cordova": {
+    "plugins": {
+      "cordova-plugin-file-transfer": {},
+      "cordova-plugin-camera": {},
+      "cordova-plugin-file": {}
+    }
+  }
 }

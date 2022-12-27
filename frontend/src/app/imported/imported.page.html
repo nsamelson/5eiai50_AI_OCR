@@ -1,0 +1,85 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>imported</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col 
+        sizeXs="12" sizeSm="6" size="4" sizeMd="4" sizeLg="4" sizeXl="2" 
+        *ngFor="let image of urlList; index as i;">
+        <ion-card class="card" (click)="openModal(i)" >
+          <ion-img [src]="image"  style="height: 200px;"></ion-img>
+          <ion-card-header style="height: 50px; overflow: hidden; ">
+            <ion-card-subtitle>{{imgRefList[i]}}</ion-card-subtitle>
+          </ion-card-header>
+          <ion-row>
+            <ion-col>
+              <ion-button (click)="openModal(i)">Open</ion-button>
+              <ion-button color="danger" (click)="deleteImage(i)">Delete</ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-card>
+        
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-modal (willDismiss)="onWillDismiss($event)" >
+    <ng-template >
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="cancelModal()">Cancel</ion-button>
+          </ion-buttons>
+          <ion-title>Process to detect text</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="confirmModal()" [strong]="true">Confirm</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      
+      <ion-content>
+        <ion-img [src]="urlOfImg"  style="height: 70%;"></ion-img>
+
+        <!-- <ion-list>
+          <ion-item>
+            <ion-label>Default Toggle</ion-label>
+            <ion-toggle slot="end"></ion-toggle>
+          </ion-item>
+        </ion-list> -->
+
+        <ion-item>
+          <ion-label position="stacked">Select a name for your file</ion-label>
+          <ion-input type="text" placeholder="Your name" [(ngModel)]="imageName"></ion-input>
+        </ion-item>
+
+        <!-- <ion-grid>
+          <ion-row class="ion-align-items-center">
+            <ion-col >
+              Select the AI              
+            </ion-col>
+            <ion-col >
+              <ion-segment value="charsAI">
+                <ion-segment-button value="charsAI">
+                  <ion-label>Written chars</ion-label>
+                </ion-segment-button>
+                <ion-segment-button value="digitsAI">
+                  <ion-label>Written digits</ion-label>
+                </ion-segment-button>
+                <ion-segment-button value="printedAI">
+                  <ion-label>Printed</ion-label>
+                </ion-segment-button>
+              </ion-segment>
+            </ion-col>
+          </ion-row>
+        </ion-grid> -->
+
+        
+        
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>
