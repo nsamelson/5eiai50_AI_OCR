@@ -16,7 +16,7 @@
   <div id="container">
 
     <ion-card class="card">
-      <ion-img [src]="uploadedImg"></ion-img>
+      <ion-img id="uploadedImg"></ion-img>
       <ion-card-header>
         <ion-card-title><strong>Ready to import an image?</strong></ion-card-title>
         <ion-card-subtitle>Select a file under the PNG or PDF format</ion-card-subtitle>
@@ -24,7 +24,7 @@
     
       <ion-card-content >       
         <ion-grid class="custom">
-          <ion-row class="ion-text-start"> <input type="file" accept="image/*" (change)="selectImage($event)"> </ion-row>
+          <ion-row class="ion-text-start"> <input type="file" accept="image/*, application/pdf" (change)="selectImage($event)"> </ion-row>
             <ion-row class="ion-text-start">
             <ion-item fill="solid" >
               <ion-label position="floating">Select a name for your file</ion-label>

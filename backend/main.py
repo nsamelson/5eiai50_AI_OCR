@@ -26,13 +26,15 @@ def hello_world():
 # PROCESS IMAGE INTO OCR
 @app.route('/process/', methods=['POST'])
 def processData():
+       
+   # Get url of picture
    items = request.get_json()
    imageName = items["img"]
    imageUrl = items["url"]
 
-
    print(imageName, imageUrl)
 
+   # Download image from url
    blob = bucket.blob("unprocessed/"+imageName)
    blob.download_to_filename("backend/temp/"+imageName) 
 
