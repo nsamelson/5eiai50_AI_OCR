@@ -10,6 +10,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { initializeApp  } from 'firebase/app';
 import { environment } from '../environments/environment';
 import { HttpClientModule } from '@angular/common/http';
+// import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 initializeApp(environment.firebaseConfig);
 
@@ -20,7 +21,7 @@ initializeApp(environment.firebaseConfig);
     BrowserModule, 
     IonicModule.forRoot(), 
     AppRoutingModule, 
-    HttpClientModule
+    HttpClientModule,
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],

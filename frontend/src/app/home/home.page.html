@@ -17,6 +17,13 @@
 
     <ion-card class="card">
       <ion-img id="uploadedImg"></ion-img>
+      <pdf-viewer [src]="pdfSrc"
+          [render-text]="true"
+          [original-size]="false"
+          [zoom-scale]="'page-fit'"
+          style="width:70vw; height: 30vw; text-align: center;"
+          *ngIf="pdfSrc != null && pdfSrc != undefined">
+      </pdf-viewer>
       <ion-card-header>
         <ion-card-title><strong>Ready to import an image?</strong></ion-card-title>
         <ion-card-subtitle>Select a file under the PNG or PDF format</ion-card-subtitle>

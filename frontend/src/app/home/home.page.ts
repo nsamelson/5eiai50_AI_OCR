@@ -4,7 +4,6 @@ import { getDownloadURL, ref, getStorage, uploadString,uploadBytes } from 'fireb
 
 
 
-
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -14,6 +13,7 @@ export class HomePage {
   selectedFile: File | undefined;
   uploadedImg: String | undefined;
   imageName: string | undefined;
+  pdfSrc: any;
 
   constructor(private toastController: ToastController) { 
     // this.app = initializeApp(environment.firebaseConfig);
@@ -24,9 +24,14 @@ export class HomePage {
     console.log(this.selectedFile);   
     this.imageName = this.selectedFile!.name
 
-    // Check if the file is an image
+    // Check if the file is an image or a pdf
     if (this.selectedFile!.type.startsWith('image/')) {
+      this.clearPreview("pdfSrc");
       this.previewImage(this.selectedFile!);
+    } 
+    else if (this.selectedFile!.type === 'application/pdf') {      
+      this.clearPreview("uploadedImg");     
+      this.previewPDF(this.selectedFile!);
     }
   };
 
@@ -46,6 +51,38 @@ export class HomePage {
 
     // Read the image file as a data URL
     reader.readAsDataURL(image);
+  }
+
+  // Function to preview the PDF
+  async previewPDF(pdf: File) {
+
+    if (typeof (FileReader) !== 'undefined') {
+      let reader = new FileReader();
+  
+      reader.onload = (e: any) => {
+        this.pdfSrc = e.target.result;
+      };
+
+      // Read the image file as a data URL
+      reader.readAsArrayBuffer(pdf);
+    }
+  }
+
+  // Function to clear the image preview
+  clearPreview(src: string) {
+    // Get the preview element
+    try {
+      if (src == "pdfSrc"){
+        this.pdfSrc = null
+      }
+      else{
+        const preview = document.getElementById(src) as HTMLImageElement;
+        preview.src = '';
+      }
+    }
+    catch{
+      console.log("no src")
+    }   
   }
 
   // Create a form data object using the FormData API
