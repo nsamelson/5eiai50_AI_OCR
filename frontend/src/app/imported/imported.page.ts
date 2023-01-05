@@ -13,8 +13,9 @@ export class ImportedPage implements OnInit {
   storage: FirebaseStorage
   urlList: string[] = [];
   imgRefList: string[] = [];
-  urlOfImg: string | undefined;
+  urlOfImg: string ="";
   imageName: string | undefined;
+  pdfSrc: any;
   // imageRef: string | undefined;
   
   @ViewChild(IonModal) modal: IonModal | undefined;
@@ -51,6 +52,12 @@ export class ImportedPage implements OnInit {
       });
   }
 
+  getFileExtension(url: string) {
+    const urlObject = new URL(url);
+    const fileName = urlObject.pathname.split('/').pop();
+    return fileName!.split('.').pop();
+  }
+
   async deleteImage(index: any){
     const storageRef = ref(this.storage, "unprocessed/"+this.imgRefList[index]);
     deleteObject(storageRef).then(() => {
@@ -62,6 +69,12 @@ export class ImportedPage implements OnInit {
 
   openModal(index: any){
     this.urlOfImg = this.urlList[index];
+
+    // const fileExtension = this.getFileExtension(this.urlOfImg)
+    // if (fileExtension == "pdf"){
+      
+    // }
+
     this.imageName = this.imgRefList[index];
     // this.imageRef = this.imgRefList[index];
     this.modal?.present();
