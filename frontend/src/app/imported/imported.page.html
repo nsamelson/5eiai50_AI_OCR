@@ -41,7 +41,7 @@
     </ion-row>
   </ion-grid>
 
-  <ion-modal (willDismiss)="onWillDismiss($event)" >
+  <ion-modal (willDismiss)="onWillDismiss($event)" class="my-custom-modal-css">
     <ng-template >
       <ion-header>
         <ion-toolbar>
@@ -63,8 +63,8 @@
               [render-text]="true"
               [original-size]="false"
               [fit-to-page]="true"
-              [zoom-scale]="'page-fit'"
-              style="height: 70%; text-align: center;"
+              [zoom-scale]="'page-width'"
+              style="height: 80%; text-align: center;"
           ></pdf-viewer>
         </ng-template>
 
