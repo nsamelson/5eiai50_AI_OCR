@@ -14,7 +14,8 @@ export class ProcessedPage implements OnInit {
   imgRefList: string[] = [];
   urlOfImg: string ="";
   imageName: string | undefined;
-  urlDict: {[key: number]: string[]} = {}
+  urlDict: {[key: string]: string[]} = {}
+  urlOfJson : string =""
 
   @ViewChild(IonModal) modal: IonModal | undefined;
 
@@ -30,40 +31,44 @@ export class ProcessedPage implements OnInit {
     // Find all the folders.
     listAll(listRef)
       .then((res) => {
-        res.prefixes.forEach((folderRef) => {
-          
+        res.prefixes.forEach((folderRef, index) => {
+          this.urlDict[index.toString()] = []  
+
           // Find all the items inside the folders
           listAll(folderRef)
             .then((res) => {
-              res.items.forEach((itemRef, index) => {                
-                var jsonUrl =""
-                var imageUrl =""
+              res.items.forEach((itemRef) => {   
+                
                 getDownloadURL(itemRef).then((downloadURL) => {
-
                   
-                  if (downloadURL.includes(".json")){
-                    jsonUrl = downloadURL
+                  
+                  if (downloadURL.includes("json")){
+                    // console.log(jsonUrl)
+                    this.urlDict[index].push(downloadURL)
                   }
                   else{
-                    imageUrl = downloadURL
+                    this.urlDict[index].unshift(downloadURL)
                     this.urlList.push(downloadURL);
                     this.imgRefList.push(itemRef.name);
                   }
                   
 
-                  console.log(itemRef);
                 });
-                this.urlDict[index] = [imageUrl,jsonUrl]
+                
                 
               });
+              
               
             }).catch((error) => {
               // Uh-oh, an error occurred!
             });
+
+            // this.urlDict[index] = [imageUrl,jsonUrl]
           
           
         });
         console.log(this.urlList)
+        console.log(this.urlDict)
       }).catch((error) => {
         // Uh-oh, an error occurred!
       });
@@ -87,11 +92,8 @@ export class ProcessedPage implements OnInit {
 
   openModal(index: any){
     this.urlOfImg = this.urlList[index];
-
-    // const fileExtension = this.getFileExtension(this.urlOfImg)
-    // if (fileExtension == "pdf"){
-      
-    // }
+    this.urlOfJson = this.urlDict[index][1]
+    //TODO: Show the content of the JSON file
 
     this.imageName = this.imgRefList[index];
     // this.imageRef = this.imgRefList[index];
