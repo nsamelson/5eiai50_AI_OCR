@@ -62,18 +62,28 @@
       
       <ion-content>
         <ion-img *ngIf="getFileExtension(urlOfImg!) !== 'pdf'; else showPdf" 
-            [src]="urlOfImg"  style="height: 70%;"></ion-img>
-        <ng-template #showPdf>  
+            [src]="urlOfImg"  style="width: 70%; margin: 0 auto;"></ion-img>
+        <ng-template #showPdf >  
             <pdf-viewer [src]="urlOfImg"
               [render-text]="true"
               [original-size]="false"
               [fit-to-page]="true"
               [zoom-scale]="'page-width'"
-              style="height: 80%; text-align: center;"
+              style="height: 80%; text-align: center; width: 70%; margin: 0 auto;"
           ></pdf-viewer>
         </ng-template>
 
-        <ion-label>{{urlOfJson}}</ion-label>
+        <div *ngIf="jsonString !== undefined" style="height: 30%;">
+          <!-- <pre>{{ jsonContent | json }}</pre> -->
+          <ion-textarea  
+            [(ngModel)]="jsonString" 
+            style="width: 70%; margin: 20px auto; border: 1px solid #ccc; border-radius: 4px; resize: none;" 
+            autoGrow></ion-textarea >
+
+
+
+        </div>
+        
         <!-- <ion-item>
           <ion-label position="stacked">Select a name for your file</ion-label>
           <ion-input type="text" placeholder="Your name" [(ngModel)]="imageName"></ion-input>

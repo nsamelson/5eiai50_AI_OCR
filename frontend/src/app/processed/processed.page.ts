@@ -1,7 +1,11 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit,ViewChild } from '@angular/core';
 import { IonModal } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core/components';
 import { deleteObject, FirebaseStorage, getDownloadURL, getStorage, listAll, ref } from 'firebase/storage';
+import { child, Database, getDatabase, ref as dbRef, set, get } from "firebase/database";
+
+
 
 @Component({
   selector: 'app-processed',
@@ -10,23 +14,33 @@ import { deleteObject, FirebaseStorage, getDownloadURL, getStorage, listAll, ref
 })
 export class ProcessedPage implements OnInit {
   storage: FirebaseStorage
+  database: Database
   urlList: string[] = [];
   imgRefList: string[] = [];
   urlOfImg: string ="";
   imageName: string | undefined;
   urlDict: {[key: string]: string[]} = {}
   urlOfJson : string =""
+  jsonContent = {"nothing": "to show"}
+  jsonString = "Nothing to show"
 
   @ViewChild(IonModal) modal: IonModal | undefined;
+  
 
-  constructor() {
+  constructor(private http: HttpClient) {
     this.storage = getStorage();
+    this.database = getDatabase();
+    
+
    }
 
   ngOnInit() {
     const listRef = ref(this.storage, 'processed');
     this.urlList = [];
     this.imgRefList = [];
+
+    
+    
 
     // Find all the folders.
     listAll(listRef)
@@ -87,15 +101,55 @@ export class ProcessedPage implements OnInit {
     // }).catch((error) => {
     //   // Uh-oh, an error occurred!
     // });
+
+    
+    
+  }
+
+
+  writeData(userId: string, name: any, email: any, imageUrl: any) {
+    set(dbRef(this.database, 'users/' + userId), {
+      username: name,
+      email: email,
+      profile_picture : imageUrl
+    });
+  }
+
+
+  readData(docRef: string){
+    get(child(dbRef(this.database), `processed/${docRef}`)).then((snapshot) => {
+      if (snapshot.exists()) {
+        console.log(snapshot.val());
+        this.jsonContent = snapshot.val()        
+      } else {
+        this.jsonContent = {"nothing": "to show"}
+      }
+      this.jsonString = JSON.stringify(
+        this.jsonContent, 
+        (key, value) => {
+          if (typeof value === 'string') {
+            return value.replace(/,/g, '\\n');
+          }
+          return value;
+        }, 2);
+      console.log(this.jsonString)
+    }).catch((error) => {
+      console.error(error);
+    });
   }
 
 
   openModal(index: any){
     this.urlOfImg = this.urlList[index];
     this.urlOfJson = this.urlDict[index][1]
-    //TODO: Show the content of the JSON file
-
     this.imageName = this.imgRefList[index];
+
+    // get(child(dbRef(this.database),"processed/"))
+
+    this.readData(this.imageName.split('.')[0])
+    console.log(this.imageName)
+
+
     // this.imageRef = this.imgRefList[index];
     this.modal?.present();
   }
@@ -106,6 +160,7 @@ export class ProcessedPage implements OnInit {
 
   confirmModal() {
     this.modal!.dismiss("this.name", 'confirm');
+    
   }
   
   onWillDismiss(event: Event) {
