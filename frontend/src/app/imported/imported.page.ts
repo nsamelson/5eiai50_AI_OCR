@@ -70,11 +70,6 @@ export class ImportedPage implements OnInit {
   openModal(index: any){
     this.urlOfImg = this.urlList[index];
 
-    // const fileExtension = this.getFileExtension(this.urlOfImg)
-    // if (fileExtension == "pdf"){
-      
-    // }
-
     this.imageName = this.imgRefList[index];
     // this.imageRef = this.imgRefList[index];
     this.modal?.present();
@@ -95,8 +90,7 @@ export class ImportedPage implements OnInit {
     }
   }
 
-  // API CALL
-
+  // send to the backend the name of the image and its name
   async processData() {
 
     const hostname = window.location.hostname;

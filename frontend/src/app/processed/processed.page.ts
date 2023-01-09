@@ -31,16 +31,12 @@ export class ProcessedPage implements OnInit {
     this.storage = getStorage();
     this.database = getDatabase();
     
-
    }
 
   ngOnInit() {
     const listRef = ref(this.storage, 'processed');
     this.urlList = [];
     this.imgRefList = [];
-
-    
-    
 
     // Find all the folders.
     listAll(listRef)
@@ -53,8 +49,7 @@ export class ProcessedPage implements OnInit {
             .then((res) => {
               res.items.forEach((itemRef) => {   
                 
-                getDownloadURL(itemRef).then((downloadURL) => {
-                  
+                getDownloadURL(itemRef).then((downloadURL) => {                  
                   
                   if (downloadURL.includes("json")){
                     // console.log(jsonUrl)
@@ -65,21 +60,12 @@ export class ProcessedPage implements OnInit {
                     this.urlList.push(downloadURL);
                     this.imgRefList.push(itemRef.name);
                   }
-                  
-
                 });
-                
-                
               });
-              
-              
             }).catch((error) => {
               // Uh-oh, an error occurred!
             });
-
             // this.urlDict[index] = [imageUrl,jsonUrl]
-          
-          
         });
         console.log(this.urlList)
         console.log(this.urlDict)
@@ -100,23 +86,16 @@ export class ProcessedPage implements OnInit {
     //   this.ngOnInit()
     // }).catch((error) => {
     //   // Uh-oh, an error occurred!
-    // });
-
-    
+    // });  
     
   }
 
-
+  // update content of the JSON
   writeData(path: string, updates: { [key: string]: any }) {
     update(child(dbRef(this.database), `processed/${path}`),updates )
-    // set(dbRef(this.database, 'users/' + userId), {
-    //   username: name,
-    //   email: email,
-    //   profile_picture : imageUrl
-    // });
   }
 
-
+  // read the content of the JSON and update JSON content then stringifies it
   readData(docRef: string){
     get(child(dbRef(this.database), `processed/${docRef}`)).then((snapshot) => {
       if (snapshot.exists()) {
@@ -159,8 +138,7 @@ export class ProcessedPage implements OnInit {
     this.modal!.dismiss(null, 'cancel');
   }
 
-  confirmModal() {
-    
+  confirmModal() {    
     try{
       var newJson = JSON.parse(this.jsonString)
       this.writeData(this.imageName!.split('.')[0],newJson)
@@ -168,10 +146,7 @@ export class ProcessedPage implements OnInit {
       this.modal!.dismiss("this.name", 'confirm');
     }catch{
       this.sendToast('There is an error in the format of the JSON',"warning")
-    }
-        
-
-    
+    } 
     
   }
   
@@ -194,14 +169,5 @@ export class ProcessedPage implements OnInit {
     await toast.present();
       
   }
-
-  // async deleteImage(index: any){
-  //   const storageRef = ref(this.storage, "processed/"+this.imgRefList[index]);
-  //   deleteObject(storageRef).then(() => {
-  //     this.ngOnInit()
-  //   }).catch((error) => {
-  //     // Uh-oh, an error occurred!
-  //   });
-  // }
 
 }

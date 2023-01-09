@@ -117,6 +117,7 @@ export class HomePage {
       
   }
 
+  // upload to unprocessed folder in Storage
   async uploadImage(cameraFile: File) {
 
     const storage = getStorage();
