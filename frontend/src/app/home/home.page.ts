@@ -95,21 +95,22 @@ export class HomePage {
         this.uploadImage(this.selectedFile)
       }
       else{
-        this.sendToast('Please choose an file in the PNG or PDF format')
+        this.sendToast('Please choose a file in the PNG or PDF format',"warning")
       }
     }
     else{
-      this.sendToast('Please choose an file in the PNG or PDF format')
+      this.sendToast('Please choose a file in the PNG or PDF format',"warning")
     }  
     
   }
 
   // Send Toast with error or success of upload
-  async sendToast(msg:string){
+  async sendToast(msg:string, success: string){
     const toast = await this.toastController.create({
       message: msg,
       duration: 1500,
-      position: 'bottom'
+      position: 'bottom',
+      color: success
     });
 
     await toast.present();
@@ -123,7 +124,7 @@ export class HomePage {
     
     uploadBytes(storageRef, cameraFile).then((snapshot) => {
       console.log('Uploaded a blob or file!');
-      this.sendToast('The file has been uploaded!')
+      this.sendToast('The file has been uploaded!',"success")
 
       getDownloadURL(snapshot.ref).then((downloadURL) => {
         console.log('File available at', downloadURL);

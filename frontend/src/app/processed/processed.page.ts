@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit,ViewChild } from '@angular/core';
-import { IonModal } from '@ionic/angular';
+import { IonModal, ToastController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core/components';
 import { deleteObject, FirebaseStorage, getDownloadURL, getStorage, listAll, ref } from 'firebase/storage';
-import { child, Database, getDatabase, ref as dbRef, set, get } from "firebase/database";
+import { child, Database, getDatabase, ref as dbRef, set, get, push, update  } from "firebase/database";
 
 
 
@@ -27,7 +27,7 @@ export class ProcessedPage implements OnInit {
   @ViewChild(IonModal) modal: IonModal | undefined;
   
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,private toastController: ToastController) {
     this.storage = getStorage();
     this.database = getDatabase();
     
@@ -107,12 +107,13 @@ export class ProcessedPage implements OnInit {
   }
 
 
-  writeData(userId: string, name: any, email: any, imageUrl: any) {
-    set(dbRef(this.database, 'users/' + userId), {
-      username: name,
-      email: email,
-      profile_picture : imageUrl
-    });
+  writeData(path: string, updates: { [key: string]: any }) {
+    update(child(dbRef(this.database), `processed/${path}`),updates )
+    // set(dbRef(this.database, 'users/' + userId), {
+    //   username: name,
+    //   email: email,
+    //   profile_picture : imageUrl
+    // });
   }
 
 
@@ -159,7 +160,18 @@ export class ProcessedPage implements OnInit {
   }
 
   confirmModal() {
-    this.modal!.dismiss("this.name", 'confirm');
+    
+    try{
+      var newJson = JSON.parse(this.jsonString)
+      this.writeData(this.imageName!.split('.')[0],newJson)
+      this.sendToast('The data was succesfully changed and updated!',"success")
+      this.modal!.dismiss("this.name", 'confirm');
+    }catch{
+      this.sendToast('There is an error in the format of the JSON',"warning")
+    }
+        
+
+    
     
   }
   
@@ -168,6 +180,19 @@ export class ProcessedPage implements OnInit {
     if (ev.detail.role === 'confirm') {
       // this.processData()
     }
+  }
+
+   // Send Toast with error or success of upload
+   async sendToast(msg:string, success: string){
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: 1500,
+      position: 'bottom',
+      color: success
+    });
+
+    await toast.present();
+      
   }
 
   // async deleteImage(index: any){

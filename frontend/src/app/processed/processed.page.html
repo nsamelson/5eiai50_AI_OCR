@@ -51,11 +51,11 @@
       <ion-header>
         <ion-toolbar>
           <ion-buttons slot="start">
-            <ion-button (click)="cancelModal()">Cancel</ion-button>
+            <ion-button (click)="cancelModal()">Close</ion-button>
           </ion-buttons>
-          <ion-title>Process to detect text</ion-title>
+          <ion-title>{{this.imageName}}</ion-title>
           <ion-buttons slot="end">
-            <ion-button (click)="confirmModal()" [strong]="true">Confirm</ion-button>
+            <ion-button (click)="confirmModal()" [strong]="true">Confirm changes</ion-button>
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
