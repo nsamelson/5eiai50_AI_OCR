@@ -7,13 +7,16 @@ import { IonicModule } from '@ionic/angular';
 import { ProcessedPageRoutingModule } from './processed-routing.module';
 
 import { ProcessedPage } from './processed.page';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
+
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    ProcessedPageRoutingModule
+    ProcessedPageRoutingModule,
+    PdfViewerModule,
   ],
   declarations: [ProcessedPage]
 })

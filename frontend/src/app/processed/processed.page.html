@@ -4,26 +4,93 @@
   </ion-toolbar>
 </ion-header>
 
+
+
 <ion-content>
   <ion-grid>
     <ion-row>
       <ion-col 
         sizeXs="12" sizeSm="6" size="4" sizeMd="4" sizeLg="4" sizeXl="2" 
-        *ngFor="let image of urlList; index as i;">
-        <ion-card class="card" >
-          <ion-img [src]="image"  style="height: 200px;"></ion-img>
+        *ngFor="let file of urlList; index as i;">
+        <ion-card class="card">
+          <div *ngIf="getFileExtension(file) === 'pdf'; then showPdf else showImage"></div>
+          
+          <ng-template #showImage>
+            <ion-img [src]="file"  style="height: 200px;"></ion-img>
+          </ng-template>
+
+          <ng-template #showPdf>  
+            <pdf-viewer [src]="file"
+              [render-text]="true"
+              [original-size]="false"
+              [fit-to-page]="true"
+              [zoom-scale]="'page-fit'"
+              [show-all]="false"
+              [page]="1"
+              style="height: 200px; text-align: center;"
+              >
+            </pdf-viewer>
+          </ng-template>
           <ion-card-header style="height: 50px; overflow: hidden; ">
             <ion-card-subtitle>{{imgRefList[i]}}</ion-card-subtitle>
           </ion-card-header>
-          <!-- <ion-row>
+          <ion-row>
             <ion-col>
               <ion-button (click)="openModal(i)">Open</ion-button>
               <ion-button color="danger" (click)="deleteImage(i)">Delete</ion-button>
             </ion-col>
-          </ion-row> -->
+          </ion-row>
         </ion-card>
         
       </ion-col>
     </ion-row>
   </ion-grid>
+
+  <ion-modal (willDismiss)="onWillDismiss($event)" class="my-custom-modal-css">
+    <ng-template >
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="cancelModal()">Close</ion-button>
+          </ion-buttons>
+          <ion-title>{{this.imageName}}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="confirmModal()" [strong]="true">Confirm changes</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      
+      <ion-content>
+        <ion-img *ngIf="getFileExtension(urlOfImg!) !== 'pdf'; else showPdf" 
+            [src]="urlOfImg"  style="width: 70%; margin: 0 auto;"></ion-img>
+        <ng-template #showPdf >  
+            <pdf-viewer [src]="urlOfImg"
+              [render-text]="true"
+              [original-size]="false"
+              [fit-to-page]="true"
+              [zoom-scale]="'page-width'"
+              style="height: 80%; text-align: center; width: 70%; margin: 0 auto;"
+          ></pdf-viewer>
+        </ng-template>
+
+        <div *ngIf="jsonString !== undefined" style="height: 30%;">
+          <!-- <pre>{{ jsonContent | json }}</pre> -->
+          <ion-textarea  
+            [(ngModel)]="jsonString" 
+            style="width: 70%; margin: 20px auto; border: 1px solid #ccc; border-radius: 4px; resize: none;" 
+            autoGrow></ion-textarea >
+
+
+
+        </div>
+        
+        <!-- <ion-item>
+          <ion-label position="stacked">Select a name for your file</ion-label>
+          <ion-input type="text" placeholder="Your name" [(ngModel)]="imageName"></ion-input>
+        </ion-item> -->
+        
+        
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>

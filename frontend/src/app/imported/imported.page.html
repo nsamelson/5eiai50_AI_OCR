@@ -9,9 +9,23 @@
     <ion-row>
       <ion-col 
         sizeXs="12" sizeSm="6" size="4" sizeMd="4" sizeLg="4" sizeXl="2" 
-        *ngFor="let image of urlList; index as i;">
-        <ion-card class="card" (click)="openModal(i)" >
-          <ion-img [src]="image"  style="height: 200px;"></ion-img>
+        *ngFor="let file of urlList; index as i;">
+        <ion-card class="card">
+          <ion-img *ngIf="getFileExtension(file) !== 'pdf'; else showPdf" 
+                   [src]="file"  style="height: 200px;"></ion-img>
+          
+          <ng-template #showPdf>  
+            <pdf-viewer [src]="file"
+              [render-text]="true"
+              [original-size]="false"
+              [fit-to-page]="true"
+              [zoom-scale]="'page-fit'"
+              [show-all]="false"
+              [page]="1"
+              style="height: 200px; text-align: center;"
+              >
+            </pdf-viewer>
+          </ng-template>
           <ion-card-header style="height: 50px; overflow: hidden; ">
             <ion-card-subtitle>{{imgRefList[i]}}</ion-card-subtitle>
           </ion-card-header>
@@ -27,7 +41,7 @@
     </ion-row>
   </ion-grid>
 
-  <ion-modal (willDismiss)="onWillDismiss($event)" >
+  <ion-modal (willDismiss)="onWillDismiss($event)" class="my-custom-modal-css">
     <ng-template >
       <ion-header>
         <ion-toolbar>
@@ -42,41 +56,23 @@
       </ion-header>
       
       <ion-content>
-        <ion-img [src]="urlOfImg"  style="height: 70%;"></ion-img>
+        <ion-img *ngIf="getFileExtension(urlOfImg!) !== 'pdf'; else showPdf" 
+            [src]="urlOfImg"  style="height: 70%;"></ion-img>
+        <ng-template #showPdf>  
+            <pdf-viewer [src]="urlOfImg"
+              [render-text]="true"
+              [original-size]="false"
+              [fit-to-page]="true"
+              [zoom-scale]="'page-width'"
+              style="height: 80%; text-align: center;"
+          ></pdf-viewer>
+        </ng-template>
 
-        <!-- <ion-list>
-          <ion-item>
-            <ion-label>Default Toggle</ion-label>
-            <ion-toggle slot="end"></ion-toggle>
-          </ion-item>
-        </ion-list> -->
 
         <ion-item>
           <ion-label position="stacked">Select a name for your file</ion-label>
           <ion-input type="text" placeholder="Your name" [(ngModel)]="imageName"></ion-input>
         </ion-item>
-
-        <!-- <ion-grid>
-          <ion-row class="ion-align-items-center">
-            <ion-col >
-              Select the AI              
-            </ion-col>
-            <ion-col >
-              <ion-segment value="charsAI">
-                <ion-segment-button value="charsAI">
-                  <ion-label>Written chars</ion-label>
-                </ion-segment-button>
-                <ion-segment-button value="digitsAI">
-                  <ion-label>Written digits</ion-label>
-                </ion-segment-button>
-                <ion-segment-button value="printedAI">
-                  <ion-label>Printed</ion-label>
-                </ion-segment-button>
-              </ion-segment>
-            </ion-col>
-          </ion-row>
-        </ion-grid> -->
-
         
         
       </ion-content>

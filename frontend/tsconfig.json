@@ -18,7 +18,8 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "es2020",
-    "lib": ["es2018", "dom"]
+    "lib": ["es2018", "dom"],
+    "types": ["pdfjs-dist"]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
