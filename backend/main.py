@@ -20,6 +20,8 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 # TEST SERVER ONLY
 @app.route('/')
 def hello_world():
+   blob = bucket.blob("processed/green dragonborn paladin/green dragonborn paladin.jpg")
+   blob.download_to_filename("backend/temp/"+"green dragonborn paladin.jpg") 
    response = jsonify({'some': 'data'})
    return response
 
@@ -29,13 +31,16 @@ def processData():
        
    # Get url of picture
    items = request.get_json()
+   print("AAAAAAAAAAAAAAAA")
+   print(items)
    imageName = items["img"]
-   imageUrl = items["url"]
+   # imageUrl = items["url"]
+   folderName = items["folder"]
 
-   print(imageName, imageUrl)
+   # print(imageName, imageUrl)
 
    # Download image from url
-   blob = bucket.blob("unprocessed/"+imageName)
+   blob = bucket.blob("processed/{}/{}".format(folderName,imageName))
    blob.download_to_filename("backend/temp/"+imageName) 
 
    # TODO: call the preprocessing program 
@@ -44,7 +49,7 @@ def processData():
    #    - detect characters and make bounding boxes in 28*28px
    # TODO: iterative call the processing program (which will loop through every bouding box and send it to model)
    # TODO: call the post processing program which will send back a json
-   # TODO: send the json to firebase/storage/processed in a folder with its corresponding image
+   # TODO: send the json to firebase/realtime database in a folder with its corresponding image
    # TODO: send back a success response!
 
    # TODO: remove temp content

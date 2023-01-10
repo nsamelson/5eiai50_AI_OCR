@@ -12,13 +12,16 @@
     <ion-row>
       <ion-col 
         sizeXs="12" sizeSm="6" size="4" sizeMd="4" sizeLg="4" sizeXl="2" 
-        *ngFor="let file of urlList; index as i;">
-        <ion-card class="card">
-          <ion-img *ngIf="getFileExtension(file) !== 'pdf'; else showPdf" 
-                   [src]="file"  style="height: 200px;"></ion-img>
+        *ngFor="let key of referencesArray; index as i;">
+        <ion-card class="card" *ngIf="references[i]['imageUrl'] !== undefined && references[i]['imageUrl'] !== null;">
+          <div *ngIf="references[i]['extension'] === 'image'; then showImage else showPdf"></div>
           
+          <ng-template #showImage>
+            <ion-img [src]="references[i]['imageUrl']"  style="height: 200px;"></ion-img>
+          </ng-template>
+
           <ng-template #showPdf>  
-            <pdf-viewer [src]="file"
+            <pdf-viewer [src]="references[i]['imageUrl']"
               [render-text]="true"
               [original-size]="false"
               [fit-to-page]="true"
@@ -30,12 +33,12 @@
             </pdf-viewer>
           </ng-template>
           <ion-card-header style="height: 50px; overflow: hidden; ">
-            <ion-card-subtitle>{{imgRefList[i]}}</ion-card-subtitle>
+            <ion-card-subtitle>{{references[i]["imageName"]}}</ion-card-subtitle>
           </ion-card-header>
           <ion-row>
             <ion-col>
-              <ion-button (click)="openModal(i)">Open</ion-button>
-              <ion-button color="danger" (click)="deleteImage(i)">Delete</ion-button>
+              <ion-button (click)="openModal(key)">Open</ion-button>
+              <ion-button color="danger" (click)="deleteImage(key)">Delete</ion-button>
             </ion-col>
           </ion-row>
         </ion-card>
@@ -59,22 +62,22 @@
       </ion-header>
       
       <ion-content>
-        <ion-img *ngIf="getFileExtension(urlOfImg!) !== 'pdf'; else showPdf" 
-            [src]="urlOfImg"  style="height: 70%;"></ion-img>
-        <ng-template #showPdf>  
-            <pdf-viewer [src]="urlOfImg"
+        <ion-img *ngIf="selectedRef['extension'] !== 'pdf'; else showPdf" 
+            [src]="selectedRef['imageUrl']"  style="width: 70%; margin: 0 auto;"></ion-img>
+        <ng-template #showPdf >  
+            <pdf-viewer [src]="selectedRef['imageUrl']"
               [render-text]="true"
               [original-size]="false"
               [fit-to-page]="true"
               [zoom-scale]="'page-width'"
-              style="height: 80%; text-align: center;"
+              style="height: 80%; text-align: center; width: 70%; margin: 0 auto;"
           ></pdf-viewer>
         </ng-template>
 
 
         <ion-item>
           <ion-label position="stacked">Select a name for your file</ion-label>
-          <ion-input type="text" placeholder="Your name" [(ngModel)]="imageName"></ion-input>
+          <ion-input type="text" placeholder="Your name" [(ngModel)]="newReference['folderName']"></ion-input>
         </ion-item>
         
         

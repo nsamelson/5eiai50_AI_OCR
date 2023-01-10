@@ -102,14 +102,15 @@ export class ProcessedPage implements OnInit {
         res.items.forEach(fileRef => {
           deleteObject(fileRef)          
         });
+        this.ngOnInit()
+        this.sendToast('The file has been successfully deleted',"success")
       }      
       ).catch(err => {
         // Handle errors here
         console.error(err);
         this.sendToast('The file could not be deleted',"danger")
     });
-    this.ngOnInit()
-    this.sendToast('The file has been successfully deleted',"success")
+    
     
   }
 
@@ -191,6 +192,7 @@ export class ProcessedPage implements OnInit {
       
   }
 
+  // Refresh page
   handleRefresh(event: any) {
     setTimeout(() => {
       // Any calls to load data go here
