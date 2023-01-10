@@ -1,3 +1,5 @@
 .vscode
 backend/training/*
 
+backend/preprocessing/textbounding/images
+backend/preprocessing/textbounding/output
