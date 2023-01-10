@@ -36,7 +36,8 @@ export class ProcessedPage implements OnInit {
 
   ngOnInit() {
     const listRef = ref(this.storage, 'processed');
-
+    this.referencesArray = []
+    this.references = {}
     // Find all the folders.
     listAll(listRef)
       .then((res) => {
