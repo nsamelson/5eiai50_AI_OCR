@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { getStorage, ref, listAll, FirebaseStorage, ListOptions, getDownloadURL, deleteObject, uploadBytes, StorageReference } from "firebase/storage";
 import { OverlayEventDetail } from '@ionic/core/components';
-import { IonModal } from '@ionic/angular';
+import { IonModal, ToastController } from '@ionic/angular';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 
 @Component({
@@ -23,7 +23,8 @@ export class ImportedPage implements OnInit {
   
 
   constructor(  
-      private http: HttpClient
+      private http: HttpClient,
+      private toastController: ToastController
     ) {
     this.storage = getStorage();
 
@@ -51,6 +52,13 @@ export class ImportedPage implements OnInit {
         // Uh-oh, an error occurred!
       });
   }
+  handleRefresh(event: any) {
+    setTimeout(() => {
+      // Any calls to load data go here
+      this.ngOnInit()
+      event.target.complete();
+    }, 2000);
+  };
 
   getFileExtension(url: string) {
     const urlObject = new URL(url);
@@ -120,6 +128,7 @@ export class ImportedPage implements OnInit {
       });
     }).catch(error => {
       console.error('Error getting file URL:', error);
+      this.sendToast('Error while moving the file',"danger")
     });
   }
 
@@ -136,7 +145,27 @@ export class ImportedPage implements OnInit {
         url: this.urlOfImg
     },{}).subscribe((response) => {
       console.log(response);
+      if (response.hasOwnProperty("success")){
+        this.sendToast("The file was sent and is being processed","success")
+      }
+      else{
+        this.sendToast("The file could not be sent","danger")
+      }
+      
     });
+  }
+
+  // Send Toast with error or success of upload
+  async sendToast(msg:string, success: string){
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: 1500,
+      position: 'bottom',
+      color: success
+    });
+
+    await toast.present();
+      
   }
 
 }

@@ -106,8 +106,10 @@ export class ProcessedPage implements OnInit {
       ).catch(err => {
         // Handle errors here
         console.error(err);
+        this.sendToast('The file could not be deleted',"danger")
     });
     this.ngOnInit()
+    this.sendToast('The file has been successfully deleted',"success")
     
   }
 
@@ -188,5 +190,13 @@ export class ProcessedPage implements OnInit {
     await toast.present();
       
   }
+
+  handleRefresh(event: any) {
+    setTimeout(() => {
+      // Any calls to load data go here
+      this.ngOnInit()
+      event.target.complete();
+    }, 2000);
+  };
 
 }
