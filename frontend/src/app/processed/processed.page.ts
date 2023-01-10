@@ -3,7 +3,7 @@ import { Component, OnInit,ViewChild } from '@angular/core';
 import { IonModal, ToastController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core/components';
 import { deleteObject, FirebaseStorage, getDownloadURL, getStorage, listAll, ref } from 'firebase/storage';
-import { child, Database, getDatabase, ref as dbRef, set, get, push, update  } from "firebase/database";
+import { child, Database, getDatabase, ref as dbRef, set, get, push, update, remove  } from "firebase/database";
 
 
 
@@ -41,13 +41,16 @@ export class ProcessedPage implements OnInit {
     listAll(listRef)
       .then((res) => {
         res.prefixes.forEach((folderRef, index) => {
-          this.references[index] = {}
+
+
+          this.references[index] = {
+            "folderName": folderRef.name,
+            "folderRef": folderRef
+          }
 
           // Find all the items inside the folders
           listAll(folderRef)
             .then((res) => {
-              this.references[index]["folderRef"] = folderRef
-              this.references[index]["folderName"] = folderRef.name
 
               res.items.forEach((itemRef) => {                   
                 getDownloadURL(itemRef).then((downloadURL) => {              
@@ -68,7 +71,7 @@ export class ProcessedPage implements OnInit {
               // Uh-oh, an error occurred!
             });
         });
-        // console.log(this.urlList)
+        
         this.referencesArray = Object.keys(this.references);
       }).catch((error) => {
         // Uh-oh, an error occurred!
@@ -86,13 +89,30 @@ export class ProcessedPage implements OnInit {
   }
 
   async deleteImage(index: any){
-    // const storageRef = ref(this.storage, "processed/"+this.imgRefList[index]);
-    // deleteObject(storageRef).then(() => {
-    //   this.ngOnInit()
-    // }).catch((error) => {
-    //   // Uh-oh, an error occurred!
-    // });  
+    // const storageRef = ref(this.storage, "processed/"+this.references[index]['folderName']);
+    const storageRef = this.references[index]['folderRef']
+    const folderName = this.references[index]['folderName']
+
+    // Remove content from realtime DB
+    this.removeData(folderName)
+
+    // Remove content from Storage
+    listAll(storageRef).then(
+      res => {
+        res.items.forEach(fileRef => {
+          deleteObject(fileRef)          
+        });
+      }      
+      ).catch(err => {
+        // Handle errors here
+        console.error(err);
+    });
+    this.ngOnInit()
     
+  }
+
+  removeData(docRef: string){
+    remove(child(dbRef(this.database), `processed/${docRef}`))
   }
 
   // update content of the JSON
