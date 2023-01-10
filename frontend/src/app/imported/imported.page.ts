@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { getStorage, ref, listAll, FirebaseStorage, ListOptions, getDownloadURL, deleteObject } from "firebase/storage";
+import { getStorage, ref, listAll, FirebaseStorage, ListOptions, getDownloadURL, deleteObject, uploadBytes, StorageReference } from "firebase/storage";
 import { OverlayEventDetail } from '@ionic/core/components';
 import { IonModal } from '@ionic/angular';
 import { HttpClient, HttpHandler } from '@angular/common/http';
@@ -16,7 +16,8 @@ export class ImportedPage implements OnInit {
   urlOfImg: string ="";
   imageName: string | undefined;
   pdfSrc: any;
-  // imageRef: string | undefined;
+  imageRef: string | undefined;
+  newFileRef : StorageReference | undefined
   
   @ViewChild(IonModal) modal: IonModal | undefined;
   
@@ -37,8 +38,7 @@ export class ImportedPage implements OnInit {
     // Find all the prefixes and items.
     listAll(listRef)
       .then((res) => {
-        res.items.forEach((itemRef) => {
-          
+        res.items.forEach((itemRef) => {          
 
           getDownloadURL(itemRef).then((downloadURL) => {
             this.urlList.push(downloadURL);
@@ -69,9 +69,8 @@ export class ImportedPage implements OnInit {
 
   openModal(index: any){
     this.urlOfImg = this.urlList[index];
-
-    this.imageName = this.imgRefList[index];
-    // this.imageRef = this.imgRefList[index];
+    this.imageName = this.imgRefList[index].split('.')[0];
+    this.imageRef = this.imgRefList[index];
     this.modal?.present();
   }
 
@@ -86,8 +85,42 @@ export class ImportedPage implements OnInit {
   onWillDismiss(event: Event) {
     const ev = event as CustomEvent<OverlayEventDetail<string>>;
     if (ev.detail.role === 'confirm') {
+
+      this.moveFile()
       this.processData()
     }
+  }
+
+  moveFile() {
+    const fileRef = ref(this.storage, "unprocessed/"+this.imageRef);
+    this.newFileRef = ref(this.storage, 'processed/' + this.imageName + '/' + fileRef.name);
+  
+    // Get the download URL for the file
+    getDownloadURL(fileRef).then((url) => {
+      // Use the download URL to fetch the file data
+      this.http.get(url, { responseType: 'blob' }).subscribe(fileData => {
+
+        // upload to new location
+        uploadBytes(this.newFileRef!,fileData).then((snapshot) => {
+          getDownloadURL(snapshot.ref).then((downloadURL) => {
+            console.log('File available at', downloadURL);
+            this.urlOfImg = downloadURL;
+          });
+          console.log('File moved to new location.');
+        }).catch(error => {
+          console.error('Error moving file:', error);
+        });
+
+        // delete from old location
+        deleteObject(fileRef).then(() => {
+          this.ngOnInit()
+        }).catch((error) => {
+          // Uh-oh, an error occurred!
+        });
+      });
+    }).catch(error => {
+      console.error('Error getting file URL:', error);
+    });
   }
 
   // send to the backend the name of the image and its name
@@ -96,8 +129,10 @@ export class ImportedPage implements OnInit {
     const hostname = window.location.hostname;
     const url = `http://${hostname}:5000/process/`;
 
+
     this.http.post(url,{
-        img: this.imageName,
+        img: this.newFileRef!.name,
+        folder: this.newFileRef!.parent,        
         url: this.urlOfImg
     },{}).subscribe((response) => {
       console.log(response);
