@@ -2,3 +2,5 @@
 backend/training/*
 backend/temp/*
 
+backend/preprocessing/textbounding/images
+backend/preprocessing/textbounding/output
