@@ -15,14 +15,17 @@ import { child, Database, getDatabase, ref as dbRef, set, get, push, update  } f
 export class ProcessedPage implements OnInit {
   storage: FirebaseStorage
   database: Database
+
   urlList: string[] = [];
-  imgRefList: string[] = [];
   urlOfImg: string ="";
+
+
   imageName: string | undefined;
-  urlDict: {[key: string]: string[]} = {}
-  urlOfJson : string =""
+  folderName: string | undefined;
+  
+  references: {[key:number]: {[key: string]: any}} = {}
   jsonContent = {"nothing": "to show"}
-  jsonString = "Nothing to show"
+  jsonString = ""
 
   @ViewChild(IonModal) modal: IonModal | undefined;
   
@@ -36,29 +39,34 @@ export class ProcessedPage implements OnInit {
   ngOnInit() {
     const listRef = ref(this.storage, 'processed');
     this.urlList = [];
-    this.imgRefList = [];
+    // this.imgRefList = [];
 
     // Find all the folders.
     listAll(listRef)
       .then((res) => {
         res.prefixes.forEach((folderRef, index) => {
-          this.urlDict[index.toString()] = []  
+          this.references[index] = {}
 
           // Find all the items inside the folders
           listAll(folderRef)
             .then((res) => {
-              res.items.forEach((itemRef) => {   
-                
-                getDownloadURL(itemRef).then((downloadURL) => {                  
+              this.references[index]["folderRef"] = folderRef
+              this.references[index]["folderName"] = folderRef.name
+
+              res.items.forEach((itemRef) => {                   
+                getDownloadURL(itemRef).then((downloadURL) => {              
                   
                   if (downloadURL.includes("json")){
                     // console.log(jsonUrl)
-                    this.urlDict[index].push(downloadURL)
+                    // this.urlDict[index].push(downloadURL)
                   }
                   else{
-                    this.urlDict[index].unshift(downloadURL)
+                    this.references[index]["imageName"] = itemRef.name
+                    this.references[index]["imageRef"] = itemRef
+                    this.references[index]["imageUrl"] = downloadURL
+                    // this.urlDict[index].unshift(downloadURL)
                     this.urlList.push(downloadURL);
-                    this.imgRefList.push(itemRef.name);
+                    // this.imgRefList.push(itemRef.name);
                   }
                 });
               });
@@ -68,7 +76,7 @@ export class ProcessedPage implements OnInit {
             // this.urlDict[index] = [imageUrl,jsonUrl]
         });
         console.log(this.urlList)
-        console.log(this.urlDict)
+        console.log(this.references)
       }).catch((error) => {
         // Uh-oh, an error occurred!
       });
@@ -91,8 +99,8 @@ export class ProcessedPage implements OnInit {
   }
 
   // update content of the JSON
-  writeData(path: string, updates: { [key: string]: any }) {
-    update(child(dbRef(this.database), `processed/${path}`),updates )
+  writeData(docRef: string, updates: { [key: string]: any }) {
+    update(child(dbRef(this.database), `processed/${docRef}`),updates )
   }
 
   // read the content of the JSON and update JSON content then stringifies it
@@ -120,14 +128,13 @@ export class ProcessedPage implements OnInit {
 
 
   openModal(index: any){
-    this.urlOfImg = this.urlList[index];
-    this.urlOfJson = this.urlDict[index][1]
-    this.imageName = this.imgRefList[index];
+    this.urlOfImg = this.references[index]["imageUrl"]
+    this.imageName = this.references[index]["imageName"]
+    this.folderName = this.references[index]["folderName"]
 
     // get(child(dbRef(this.database),"processed/"))
 
-    this.readData(this.imageName.split('.')[0])
-    console.log(this.imageName)
+    this.readData(this.folderName!)
 
 
     // this.imageRef = this.imgRefList[index];
@@ -141,7 +148,7 @@ export class ProcessedPage implements OnInit {
   confirmModal() {    
     try{
       var newJson = JSON.parse(this.jsonString)
-      this.writeData(this.imageName!.split('.')[0],newJson)
+      this.writeData(this.folderName!,newJson)
       this.sendToast('The data was succesfully changed and updated!',"success")
       this.modal!.dismiss("this.name", 'confirm');
     }catch{
