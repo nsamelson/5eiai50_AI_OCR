@@ -16,30 +16,26 @@ export class ProcessedPage implements OnInit {
   storage: FirebaseStorage
   database: Database
 
-  urlList: string[] = [];
-  urlOfImg: string ="";
-
-
-  imageName: string | undefined;
-  folderName: string | undefined;
-  
   references: {[key:number]: {[key: string]: any}} = {}
+  referencesArray: string[] = []
+  selectedRef : {[key: string]: any} = {}
+
   jsonContent = {"nothing": "to show"}
   jsonString = ""
 
   @ViewChild(IonModal) modal: IonModal | undefined;
+  
   
 
   constructor(private http: HttpClient,private toastController: ToastController) {
     this.storage = getStorage();
     this.database = getDatabase();
     
+    
    }
 
   ngOnInit() {
     const listRef = ref(this.storage, 'processed');
-    this.urlList = [];
-    // this.imgRefList = [];
 
     // Find all the folders.
     listAll(listRef)
@@ -58,34 +54,35 @@ export class ProcessedPage implements OnInit {
                   
                   if (downloadURL.includes("json")){
                     // console.log(jsonUrl)
-                    // this.urlDict[index].push(downloadURL)
                   }
                   else{
                     this.references[index]["imageName"] = itemRef.name
                     this.references[index]["imageRef"] = itemRef
                     this.references[index]["imageUrl"] = downloadURL
-                    // this.urlDict[index].unshift(downloadURL)
-                    this.urlList.push(downloadURL);
-                    // this.imgRefList.push(itemRef.name);
+                    this.references[index]["extension"] = this.getFileExtension(itemRef.name)
+
                   }
                 });
               });
             }).catch((error) => {
               // Uh-oh, an error occurred!
             });
-            // this.urlDict[index] = [imageUrl,jsonUrl]
         });
-        console.log(this.urlList)
-        console.log(this.references)
+        // console.log(this.urlList)
+        this.referencesArray = Object.keys(this.references);
       }).catch((error) => {
         // Uh-oh, an error occurred!
       });
   }
 
-  getFileExtension(url: string) {
-    const urlObject = new URL(url);
-    const fileName = urlObject.pathname.split('/').pop();
-    return fileName!.split('.').pop();
+  getFileExtension(fileName: string) {
+    const extension = fileName.split('.')[1]
+    if (extension == "pdf"){
+      return "pdf"
+    }
+    else{
+      return "image"
+    }
   }
 
   async deleteImage(index: any){
@@ -128,16 +125,11 @@ export class ProcessedPage implements OnInit {
 
 
   openModal(index: any){
-    this.urlOfImg = this.references[index]["imageUrl"]
-    this.imageName = this.references[index]["imageName"]
-    this.folderName = this.references[index]["folderName"]
+    this.selectedRef = this.references[index]
 
-    // get(child(dbRef(this.database),"processed/"))
+    // Read JSON content
+    this.readData(this.selectedRef['folderName'])
 
-    this.readData(this.folderName!)
-
-
-    // this.imageRef = this.imgRefList[index];
     this.modal?.present();
   }
 
@@ -148,7 +140,7 @@ export class ProcessedPage implements OnInit {
   confirmModal() {    
     try{
       var newJson = JSON.parse(this.jsonString)
-      this.writeData(this.folderName!,newJson)
+      this.writeData(this.selectedRef['folderName'],newJson)
       this.sendToast('The data was succesfully changed and updated!',"success")
       this.modal!.dismiss("this.name", 'confirm');
     }catch{
