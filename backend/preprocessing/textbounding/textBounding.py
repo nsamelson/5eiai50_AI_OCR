@@ -163,3 +163,18 @@ def cropWords(imagePath, minConfidence=0.5, width=1280, height=1280):
     cv2.waitKey(0)
     
     return
+
+def cropCharacters():
+    # Load the image
+    img = cv2.imread("image.jpg", cv2.IMREAD_GRAYSCALE)
+
+    # Apply thresholding to create a binary image
+    _, binary_img = cv2.threshold(img, 128, 255, cv2.THRESH_BINARY_INV)
+
+    # Use morphological operations to separate the characters
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3,3))
+    binary_img = cv2.morphologyEx(binary_img, cv2.MORPH_CLOSE, kernel, iterations=2)
+
+    # Now you can use the binary image to segment the individual characters
+    # You can loop through all the contours and crop the characters out
+    return
