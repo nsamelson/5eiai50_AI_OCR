@@ -3,7 +3,7 @@ import { Component, OnInit,ViewChild } from '@angular/core';
 import { IonModal, ToastController } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core/components';
 import { deleteObject, FirebaseStorage, getDownloadURL, getStorage, listAll, ref } from 'firebase/storage';
-import { child, Database, getDatabase, ref as dbRef, set, get, push, update  } from "firebase/database";
+import { child, Database, getDatabase, ref as dbRef, set, get, push, update, remove  } from "firebase/database";
 
 
 
@@ -15,84 +15,113 @@ import { child, Database, getDatabase, ref as dbRef, set, get, push, update  } f
 export class ProcessedPage implements OnInit {
   storage: FirebaseStorage
   database: Database
-  urlList: string[] = [];
-  imgRefList: string[] = [];
-  urlOfImg: string ="";
-  imageName: string | undefined;
-  urlDict: {[key: string]: string[]} = {}
-  urlOfJson : string =""
+
+  references: {[key:number]: {[key: string]: any}} = {}
+  referencesArray: string[] = []
+  selectedRef : {[key: string]: any} = {}
+
   jsonContent = {"nothing": "to show"}
-  jsonString = "Nothing to show"
+  jsonString = ""
 
   @ViewChild(IonModal) modal: IonModal | undefined;
+  
   
 
   constructor(private http: HttpClient,private toastController: ToastController) {
     this.storage = getStorage();
     this.database = getDatabase();
     
+    
    }
 
   ngOnInit() {
     const listRef = ref(this.storage, 'processed');
-    this.urlList = [];
-    this.imgRefList = [];
-
+    this.referencesArray = []
+    this.references = {}
     // Find all the folders.
     listAll(listRef)
       .then((res) => {
         res.prefixes.forEach((folderRef, index) => {
-          this.urlDict[index.toString()] = []  
+
+
+          this.references[index] = {
+            "folderName": folderRef.name,
+            "folderRef": folderRef
+          }
 
           // Find all the items inside the folders
           listAll(folderRef)
             .then((res) => {
-              res.items.forEach((itemRef) => {   
-                
-                getDownloadURL(itemRef).then((downloadURL) => {                  
+
+              res.items.forEach((itemRef) => {                   
+                getDownloadURL(itemRef).then((downloadURL) => {              
                   
                   if (downloadURL.includes("json")){
                     // console.log(jsonUrl)
-                    this.urlDict[index].push(downloadURL)
                   }
                   else{
-                    this.urlDict[index].unshift(downloadURL)
-                    this.urlList.push(downloadURL);
-                    this.imgRefList.push(itemRef.name);
+                    this.references[index]["imageName"] = itemRef.name
+                    this.references[index]["imageRef"] = itemRef
+                    this.references[index]["imageUrl"] = downloadURL
+                    this.references[index]["extension"] = this.getFileExtension(itemRef.name)
+
                   }
                 });
               });
             }).catch((error) => {
               // Uh-oh, an error occurred!
             });
-            // this.urlDict[index] = [imageUrl,jsonUrl]
         });
-        console.log(this.urlList)
-        console.log(this.urlDict)
+        
+        this.referencesArray = Object.keys(this.references);
       }).catch((error) => {
         // Uh-oh, an error occurred!
       });
   }
 
-  getFileExtension(url: string) {
-    const urlObject = new URL(url);
-    const fileName = urlObject.pathname.split('/').pop();
-    return fileName!.split('.').pop();
+  getFileExtension(fileName: string) {
+    const extension = fileName.split('.')[1]
+    if (extension == "pdf"){
+      return "pdf"
+    }
+    else{
+      return "image"
+    }
   }
 
   async deleteImage(index: any){
-    // const storageRef = ref(this.storage, "processed/"+this.imgRefList[index]);
-    // deleteObject(storageRef).then(() => {
-    //   this.ngOnInit()
-    // }).catch((error) => {
-    //   // Uh-oh, an error occurred!
-    // });  
+    // const storageRef = ref(this.storage, "processed/"+this.references[index]['folderName']);
+    const storageRef = this.references[index]['folderRef']
+    const folderName = this.references[index]['folderName']
+
+    // Remove content from realtime DB
+    this.removeData(folderName)
+
+    // Remove content from Storage
+    listAll(storageRef).then(
+      res => {
+        res.items.forEach(fileRef => {
+          deleteObject(fileRef)          
+        });
+        this.ngOnInit()
+        this.sendToast('The file has been successfully deleted',"success")
+      }      
+      ).catch(err => {
+        // Handle errors here
+        console.error(err);
+        this.sendToast('The file could not be deleted',"danger")
+    });
+    
     
   }
 
+  removeData(docRef: string){
+    remove(child(dbRef(this.database), `processed/${docRef}`))
+  }
+
   // update content of the JSON
-  writeData(path: string, updates: { [key: string]: any }) {
-    update(child(dbRef(this.database), `processed/${path}`),updates )
+  writeData(docRef: string, updates: { [key: string]: any }) {
+    update(child(dbRef(this.database), `processed/${docRef}`),updates )
   }
 
   // read the content of the JSON and update JSON content then stringifies it
@@ -120,17 +149,11 @@ export class ProcessedPage implements OnInit {
 
 
   openModal(index: any){
-    this.urlOfImg = this.urlList[index];
-    this.urlOfJson = this.urlDict[index][1]
-    this.imageName = this.imgRefList[index];
+    this.selectedRef = this.references[index]
 
-    // get(child(dbRef(this.database),"processed/"))
+    // Read JSON content
+    this.readData(this.selectedRef['folderName'])
 
-    this.readData(this.imageName.split('.')[0])
-    console.log(this.imageName)
-
-
-    // this.imageRef = this.imgRefList[index];
     this.modal?.present();
   }
 
@@ -141,7 +164,7 @@ export class ProcessedPage implements OnInit {
   confirmModal() {    
     try{
       var newJson = JSON.parse(this.jsonString)
-      this.writeData(this.imageName!.split('.')[0],newJson)
+      this.writeData(this.selectedRef['folderName'],newJson)
       this.sendToast('The data was succesfully changed and updated!',"success")
       this.modal!.dismiss("this.name", 'confirm');
     }catch{
@@ -169,5 +192,14 @@ export class ProcessedPage implements OnInit {
     await toast.present();
       
   }
+
+  // Refresh page
+  handleRefresh(event: any) {
+    setTimeout(() => {
+      // Any calls to load data go here
+      this.ngOnInit()
+      event.target.complete();
+    }, 2000);
+  };
 
 }
