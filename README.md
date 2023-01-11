@@ -23,26 +23,27 @@ The app checks if it's a PDF or an image file before sending it to the storage
 
 ### Backend
 
-## App abilities
+## App capabilities
 
 
 
 ## Requirements
-* ionic
+* Ionic
     - ```cd frontend```
     - ```npm install -g @ionic/cli``` to install ionic
     - ```npm install``` to install all depedencies
-* python
+* Python
     - ```pip install requirements.txt``` to install all libraries
 
 
 ## Run the app
-- Frontend : 
+From a shell at the root of the project, run:
+- Frontend server : 
     - ```cd frontend```
     - ```ionic serve``` or ```ionic serve --external``` to access the website from external devices on the same local network
 - Backend server :
-    - ```cd frontend```
-    - ``` python3 main.py```
+    - ```cd backend```
+    - ```python3 main.py```
 
 
 ## Sources
