@@ -5,7 +5,7 @@ from firebase_admin import storage
 from firebase_admin import credentials
 
 # Firebase setup
-cred = credentials.Certificate('backend/config/firebase.json')
+cred = credentials.Certificate('./config/firebase.json')
 firebase_admin.initialize_app(cred, {
    'storageBucket': 'ocr-des-enfers.appspot.com'
 })
