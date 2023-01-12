@@ -16,9 +16,9 @@ imageNumber = 1
 
 
 
-while os.path.isfile(f"backend/input/testAllTogether/{imageNumber}.png"):
+while os.path.isfile(f"backend/characterRecognition/input/testAllTogether/{imageNumber}.png"):
     try:
-        img = cv2.imread(f"backend/input/testAllTogether/{imageNumber}.png")[:,:,0]
+        img = cv2.imread(f"backend/characterRecognition/input/testAllTogether/{imageNumber}.png")[:,:,0]
         img = np.invert(np.array([img]))
         
         prediction = model.predict(img)
