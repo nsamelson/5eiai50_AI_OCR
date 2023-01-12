@@ -3,6 +3,9 @@ from flask_cors import CORS
 import firebase_admin
 from firebase_admin import storage
 from firebase_admin import credentials
+import preprocessing.preprocessing as prep
+import os
+
 
 # Firebase setup
 cred = credentials.Certificate('./config/firebase.json')
@@ -40,13 +43,17 @@ def processData():
    # print(imageName, imageUrl)
 
    # Download image from url
+   directory = "temp"
+   if not os.path.exists(directory):
+      os.makedirs(directory)
+   
    blob = bucket.blob("processed/{}/{}".format(folderName,imageName))
-   blob.download_to_filename("backend/temp/"+imageName) 
+   blob.download_to_filename("/temp/"+imageName) 
 
    # TODO: call the preprocessing program 
-   #    - detect text zone
-   #    - (detect words)
-   #    - detect characters and make bounding boxes in 28*28px
+   prep.prepareCharacters("./backend/temp/"+imageName)
+
+   #    - make bounding boxes in 28*28px
    # TODO: iterative call the processing program (which will loop through every bouding box and send it to model)
    # TODO: call the post processing program which will send back a json
    # TODO: send the json to firebase/realtime database in a folder with its corresponding image
