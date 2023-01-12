@@ -5,4 +5,4 @@ opencv-python
 pandas
 scikit-learn
 tensorflow
-
+matplotlib

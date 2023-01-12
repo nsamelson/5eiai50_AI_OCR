@@ -33,7 +33,7 @@ The app checks if it's a PDF or an image file before sending it to the storage
     - ```npm install -g @ionic/cli``` to install ionic
     - ```npm install``` to install all depedencies
 * Python
-    - ```pip install requirements.txt``` to install all libraries
+    - ```pip install -r requirements.txt``` to install all libraries
 
 
 ## Run the app
