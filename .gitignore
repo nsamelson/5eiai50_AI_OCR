@@ -7,3 +7,5 @@ backend/preprocessing/textbounding/images
 backend/preprocessing/textbounding/output
 __pycache__
 
+backend/preprocessing/textbounding/outputchars
+backend/preprocessing/textbounding/outputwords
