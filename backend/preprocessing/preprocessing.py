@@ -26,4 +26,3 @@ def prepareCharacters(imagePath):
 
     return
 
-# prepareCharacters('./backend/preprocessing/textbounding/images/Loremipsum1.png')
