@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild,  } from '@angular/core';
 import { getStorage, ref, listAll, FirebaseStorage, ListOptions, getDownloadURL, deleteObject, uploadBytes, StorageReference } from "firebase/storage";
 import { OverlayEventDetail } from '@ionic/core/components';
-import { IonModal, ToastController } from '@ionic/angular';
+import { IonModal, ToastController, LoadingController  } from '@ionic/angular';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 
 @Component({
@@ -11,15 +11,6 @@ import { HttpClient, HttpHandler } from '@angular/common/http';
 })
 export class ImportedPage implements OnInit {
   storage: FirebaseStorage
-  // urlList: string[] = [];
-  // imgRefList: string[] = [];
-  // urlOfImg: string ="";
-  // imageName: string | undefined;
-  // pdfSrc: any;
-  // imageRef: string | undefined;
-  // newImageName: string = ""
-  // newFileRef : StorageReference | undefined
-  
 
   references: {[key:number]: {[key: string]: any}} = {}
   referencesArray: string[] = []
@@ -32,7 +23,8 @@ export class ImportedPage implements OnInit {
 
   constructor(  
       private http: HttpClient,
-      private toastController: ToastController
+      private toastController: ToastController,
+      public loadingController: LoadingController
     ) {
     this.storage = getStorage();
 
@@ -42,8 +34,6 @@ export class ImportedPage implements OnInit {
     // Create a reference under which you want to list
     const listRef = ref(this.storage, 'unprocessed');
     this.referencesArray = []
-    // this.urlList = [];
-    // this.imgRefList = [];
 
     // Find all the prefixes and items.
     listAll(listRef)
@@ -58,8 +48,6 @@ export class ImportedPage implements OnInit {
           getDownloadURL(itemRef).then((downloadURL) => {
             this.references[index]["imageUrl"] = downloadURL
             
-            // this.urlList.push(downloadURL);
-            // this.imgRefList.push(itemRef.name);
           });
           this.referencesArray.push(index.toString());
         
@@ -81,9 +69,7 @@ export class ImportedPage implements OnInit {
   };
 
   getFileExtension(fileName: string) {
-    // const urlObject = new URL(url);
-    // const fileName = urlObject.pathname.split('/').pop();
-    // return fileName!.split('.').pop();
+
     const extension = fileName.split('.')[1]
     if (extension == "pdf"){
       return "pdf"
@@ -105,15 +91,11 @@ export class ImportedPage implements OnInit {
   openModal(index: any){
     this.selectedRef = this.references[index]
     
-
-    // this.urlOfImg = this.urlList[index];
     this.newReference = {
       "imageName": this.selectedRef["imageName"],
       "folderName": this.selectedRef["imageName"].split('.')[0]
     }
-    // this.newReference["imageName"] = this.references[index]["imageName"];
-    // this.newReference["folderName"] = this.references[index]["imageName"].split('.')[0];
-    // this.imageRef = this.references[index]["imageName"];
+
     this.modal?.present();
   }
 
@@ -161,9 +143,7 @@ export class ImportedPage implements OnInit {
         }).catch(error => {
           console.error('Error moving file:', error);
           this.sendToast('Error while moving the file',"danger")
-        });
-
-        
+        });     
 
         // delete from old location
         deleteObject(fileRef).then(() => {
@@ -187,6 +167,7 @@ export class ImportedPage implements OnInit {
 
     console.log(this.newReference)
 
+    this.presentLoading();
     this.http.post(url,
       {
         img: this.newReference["imageName"],
@@ -197,12 +178,21 @@ export class ImportedPage implements OnInit {
       console.log(response);
       if (response.hasOwnProperty("success")){
         this.sendToast("The file was sent and is being processed","success")
+        this.loadingController.dismiss();
       }
       else{
         this.sendToast("The file could not be sent","danger")
-      }
-      
+        this.loadingController.dismiss();
+      } 
     });
+  }
+
+  async presentLoading() {
+    const loading = await this.loadingController.create({
+      message: 'Please wait...',
+      translucent: true,
+    });
+    return await loading.present();
   }
 
   // Send Toast with error or success of upload
