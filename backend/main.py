@@ -20,8 +20,8 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 # TEST SERVER ONLY
 @app.route('/')
 def hello_world():
-   blob = bucket.blob("processed/green dragonborn paladin/green dragonborn paladin.jpg")
-   blob.download_to_filename("backend/temp/"+"green dragonborn paladin.jpg") 
+   # blob = bucket.blob("processed/green dragonborn paladin/green dragonborn paladin.jpg")
+   # blob.download_to_filename("backend/temp/"+"green dragonborn paladin.jpg") 
    response = jsonify({'some': 'data'})
    return response
 
