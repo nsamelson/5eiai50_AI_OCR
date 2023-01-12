@@ -16,10 +16,8 @@ firebase_admin.initialize_app(cred, {
    'storageBucket': 'ocr-des-enfers.appspot.com',
    "databaseURL": "https://ocr-des-enfers-default-rtdb.europe-west1.firebasedatabase.app/" 
 })
-
 bucket = storage.bucket()
 ref = db.reference('processed')
-
 
 # Flask setup
 app = Flask(__name__)
@@ -32,7 +30,7 @@ def hello_world():
    response = jsonify({'some': 'data'})
    return response
 
-# PROCESS IMAGE INTO OCR
+# PROCESS IMAGE TO TEXT
 @app.route('/process/', methods=['POST'])
 def processData():
        
@@ -58,9 +56,7 @@ def processData():
    else :
       newImageName = imageName
    
-
-   # TODO: call the preprocessing program 
-   prep.prepareCharacters("./backend/temp/"+newImageName)
+   prep.prepareCharacters("temp/"+imageName)
 
    #    - make bounding boxes in 28*28px
    # TODO: iterative call the processing program (which will loop through every bouding box and send it to model)
@@ -84,7 +80,6 @@ def processData():
    return response
 
 
-
-
 if __name__ == '__main__':
+   # prep.prepareCharacters("temp/PRINTECAM_canon3320_v1self_ecam_be_0752_001_page-0001.jpg")
    app.run()
