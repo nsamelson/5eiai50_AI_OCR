@@ -23,17 +23,17 @@ The app checks if it's a PDF or an image file before sending it to the storage
 
 ### Backend
 The backend was developed in Python, using the Flask library. There is only one endpoint, which can be accessed through the url 127.0.0.1:5000/process, using a 'POST' method. The backend recieves a request from the frontend, containing three parameters: 
-- imageName: the name of the image to be processed. This is useful for naming the temporary images when they are download to be processed.
-- imageUrl: this is the url leading to the image location on Firebase. It is used to link it to the output text that will be detected
-- folderName: the name of the of the folder the image is stored in, inside Firebase. Useful for naming the temporary folders on the backend system.
+- ``imageName``: the name of the image to be processed. This is useful for naming the temporary images when they are download to be processed.
+- ``imageUrl``: this is the url leading to the image location on Firebase. It is used to link it to the output text that will be detected
+- ``folderName``: the name of the of the folder the image is stored in, inside Firebase. Useful for naming the temporary folders on the backend system.
 
 This is how the backend works to process a file:
 1. The image to be processed is downloaded into a temporary location, on the backend machine storage.
 2. The image goes through a pre-processing stage: 
-- A pre-trained machine learning model is run on the image, using OpenCV's `dnn` package. This allows to identify the words present in the picture, and crops them into individual images
-- Each 'word image' is then processed by OpenCV again, in order to extract individual characters and crop them to new individual pictures, but this time using traditional computer vision
-- Each 'character image' is then resized to a suitable size for the character recognition software
-3. Each 'character image' is run through the actual pre-trained character recognition model, which outputs the predicted text to a JSON file.
+    - A pre-trained machine learning model is run on the image, using OpenCV's `dnn` package. This allows to identify the words present in the picture, and crops them into individual images
+    - Each 'word image' is then processed by OpenCV again, in order to extract individual characters and crop them to new individual pictures, but this time using traditional computer vision
+    - Each 'character image' is then resized to a suitable size for the character recognition software
+3. Each 'character image' is run through the actual trained character recognition model, which outputs the predicted text to a JSON file.
 4. The JSON -encoded text is sent to Firebase Realtime Database.
 5. The backend ultimately proceeds to cleaning up all temporary folders
 
