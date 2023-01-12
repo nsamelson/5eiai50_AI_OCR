@@ -43,10 +43,6 @@ x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size = 
 model = Sequential()
 
 # CNN architechture : In -> [[Conv2D->relu]*2 -> MaxPool2D -> Dropout]*2 -> Flatten -> Dense -> Dropout -> Out
-
-# model.add(Flatten(input_shape=(28,28)))
-# model.add(Dense(256, activation = "relu"))
-# model.add(Dense(128, activation = "relu"))
 model.add(Conv2D(filters = 32, kernel_size = (5,5),padding = 'Same', activation ='relu', input_shape = (28,28,1)))
 model.add(Conv2D(filters = 32, kernel_size = (5,5),padding = 'Same', activation ='relu'))
 model.add(MaxPool2D(pool_size=(2,2)))
@@ -69,8 +65,8 @@ model.add(Dense(62, activation = "softmax"))
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 # Parameters to train the model
-epochs = 6 # iterations to go through the entire model
-batch_size = 128 # number of samples per batch
+epochs = 20 # iterations to go through the entire model
+batch_size = 256 # number of samples per batch
 
 
 # train the model
