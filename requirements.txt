@@ -7,3 +7,5 @@ scikit-learn
 tensorflow
 matplotlib
 imutils
+fitz
+PyMuPDF

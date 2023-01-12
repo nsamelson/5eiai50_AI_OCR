@@ -5,7 +5,9 @@ from firebase_admin import storage
 from firebase_admin import credentials
 from firebase_admin import db
 import preprocessing.preprocessing as prep
+import preprocessing.pdfToPng as ptp
 import os
+from PIL import Image
 
 
 # Firebase setup
@@ -50,8 +52,15 @@ def processData():
    blob = bucket.blob("processed/{}/{}".format(folderName,imageName))
    blob.download_to_filename("temp/"+imageName) 
 
+   # Transform pdf into png
+   if (imageName.endswith(".pdf")) :
+      newImageName = ptp.transformIntoPng(imageName)
+   else :
+      newImageName = imageName
+   
+
    # TODO: call the preprocessing program 
-   prep.prepareCharacters("./backend/temp/"+imageName)
+   prep.prepareCharacters("./backend/temp/"+newImageName)
 
    #    - make bounding boxes in 28*28px
    # TODO: iterative call the processing program (which will loop through every bouding box and send it to model)
@@ -73,6 +82,8 @@ def processData():
    
    response = jsonify({'success': 'The image has been processed!!!'})
    return response
+
+
 
 
 if __name__ == '__main__':
