@@ -1,5 +1,6 @@
 .vscode
-backend/training/*
+backend/characterRecognition/datasets/*
+backend/characterRecognition/datasets/printed/*
 backend/temp/*
 
 backend/preprocessing/textbounding/images
