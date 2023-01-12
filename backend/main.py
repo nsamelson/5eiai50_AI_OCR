@@ -8,6 +8,7 @@ import preprocessing.preprocessing as prep
 import preprocessing.pdfToPng as ptp
 import os
 from PIL import Image
+import postprocessing.emptyFolder as empty
 
 
 # Firebase setup
@@ -41,11 +42,9 @@ def processData():
    imageName = items["img"]
    imageUrl = items["url"]
    folderName = items["folder"]
-
-   # Download image from url
-   directory = "temp"
-   if not os.path.exists(directory):
-      os.makedirs(directory)
+   
+   # Create folder if not existing
+   empty.createFolder("temp")
    
    blob = bucket.blob("processed/{}/{}".format(folderName,imageName))
    blob.download_to_filename("temp/"+imageName) 
@@ -56,7 +55,7 @@ def processData():
    else :
       newImageName = imageName
    
-   prep.prepareCharacters("temp/"+imageName)
+   prep.prepareCharacters("temp/"+newImageName)
 
    #    - make bounding boxes in 28*28px
    # TODO: iterative call the processing program (which will loop through every bouding box and send it to model)
@@ -74,7 +73,8 @@ def processData():
    })
    # TODO: send back a success response!
 
-   # TODO: remove temp content
+   # Empty temp folder
+   empty.empty("temp")
    
    response = jsonify({'success': 'The image has been processed!!!'})
    return response
