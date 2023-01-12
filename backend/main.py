@@ -8,8 +8,8 @@ import preprocessing.preprocessing as prep
 import preprocessing.pdfToPng as ptp
 import os
 from PIL import Image
-import postprocessing.emptyFolder as empty
-
+import utils.emptyFolder as empty
+import processing.processImages as process
 
 # Firebase setup
 cred = credentials.Certificate('./config/firebase.json')
@@ -60,16 +60,14 @@ def processData():
    #    - make bounding boxes in 28*28px
    # TODO: iterative call the processing program (which will loop through every bouding box and send it to model)
    # TODO: call the post processing program which will send back a json
+   output = process.predict()
 
    # Send the json to firebase/realtime database in a folder with its corresponding image
    output_ref = ref.child(folderName)
    output_ref.set({
       'Name': imageName,
       'url': imageUrl,
-      'content':{
-         "test" :"1, 2",
-         "other test": "1,2,3,4"
-      }
+      'content':output
    })
    # TODO: send back a success response!
 
@@ -82,4 +80,5 @@ def processData():
 
 if __name__ == '__main__':
    # prep.prepareCharacters("temp/PRINTECAM_canon3320_v1self_ecam_be_0752_001_page-0001.jpg")
+   
    app.run()
