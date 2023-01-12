@@ -192,6 +192,8 @@ def cropCharacters(imagePath):
         
         # Add white padding around letter as it is cropped with no margin
         character_img = cv2.copyMakeBorder(character_img, 8, 8, 8, 8, cv2.BORDER_CONSTANT, value=[255, 255, 255])
+        character_img = cv2.resize(character_img, dsize=(28, 28), interpolation=cv2.INTER_AREA)
+
         cv2.imwrite('preprocessing/textbounding/outputchars/'+file_name+'/'+str(i)+file_ext, character_img)
         
     return
