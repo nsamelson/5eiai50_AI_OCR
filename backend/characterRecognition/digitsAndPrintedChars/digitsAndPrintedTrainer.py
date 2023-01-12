@@ -12,7 +12,7 @@ from sklearn.model_selection import train_test_split
 #     'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
 
 # import data
-dataset = pd.read_csv("characterRecognition/datasets/newDigitsAndPrinted.csv").astype('float32')
+dataset = pd.read_csv("characterRecognition/datasets/CombinedDigitsAndPrinted.csv").astype('float32')
 dataset.rename(columns={'0':'label'}, inplace=True)
 
 # Splite data the X - Our data , and y - the prdict label
@@ -60,7 +60,7 @@ model.add(Dense(256, activation = "relu"))
 model.add(Dropout(0.5))
 
 
-model.add(Dense(36, activation = "softmax"))
+model.add(Dense(62, activation = "softmax"))
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
@@ -76,9 +76,10 @@ history = model.fit(x_train, y_train,
         batch_size = batch_size,
         steps_per_epoch = x_train.shape[0] // batch_size)
 
+
 # evaluate the model
 scores = model.evaluate(x_test,y_test, verbose=0)
 print("CNN Score:",scores[1])
 
 # save the model
-model.save('models/newDigitsAndPrinted.model')
+model.save('models/digitsAndPrinted.model')
