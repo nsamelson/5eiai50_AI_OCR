@@ -8,11 +8,12 @@ import os
 
 
 # load the model
-model = tf.keras.models.load_model('models/newDigitsAndPrinted.model')
+model = tf.keras.models.load_model('models/digitsAndPrinted.model')
 output_labels = ['0','1','2','3','4','5','6','7','8','9',
     'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
+    'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'
     ]
-    # 'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'
+
 imageNumber = 1
 
 
@@ -23,6 +24,8 @@ while os.path.isfile(f"characterRecognition/input/testAllTogether/{imageNumber}.
         img = np.invert(np.array([img]))
         
         prediction = model.predict(img)
+        model.summary()
+
         # print(f"This character is probably a {np.argmax(prediction)}")
         print(f"This character is probably a {output_labels[np.argmax(prediction)]}")
 
