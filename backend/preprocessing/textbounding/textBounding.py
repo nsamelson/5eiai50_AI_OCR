@@ -31,7 +31,7 @@ def cropWords(imagePath, minConfidence=0.5, width=1280, height=1280):
 
     # load the pre-trained EAST text detector
     print("[INFO] loading EAST text detector...")
-    net = cv2.dnn.readNet("./backend/preprocessing/textbounding/frozen_east_text_detection.pb")
+    net = cv2.dnn.readNet("./preprocessing/textbounding/frozen_east_text_detection.pb")
 
     # construct a blob from the image and then perform a forward pass of the model to obtain the two output layer sets
     blob = cv2.dnn.blobFromImage(image, 1.0, (W, H),
@@ -99,7 +99,7 @@ def cropWords(imagePath, minConfidence=0.5, width=1280, height=1280):
 
     # delete output folder
     try:
-        shutil.rmtree('./backend/preprocessing/textbounding/outputwords')
+        shutil.rmtree('preprocessing/textbounding/outputwords')
     except Exception as e:
         do = "nothing"
 
@@ -107,7 +107,7 @@ def cropWords(imagePath, minConfidence=0.5, width=1280, height=1280):
     uncreated = 1
     while (uncreated):
         try:
-            os.mkdir('./backend/preprocessing/textbounding/outputwords')
+            os.mkdir('preprocessing/textbounding/outputwords')
             uncreated = 0
         except Exception as e:
             do = "nothing"
@@ -155,11 +155,11 @@ def cropWords(imagePath, minConfidence=0.5, width=1280, height=1280):
 
     for img in croppedList:
         roi = temp_image[img.startY:img.endY, img.startX:img.endX]
-        cv2.imwrite("./backend/preprocessing/textbounding/outputwords/" + str(count) + ".jpg", roi)
+        cv2.imwrite("preprocessing/textbounding/outputwords/" + str(count) + ".jpg", roi)
         count = count + 1
 
     # show the output image
-    cv2.imwrite("./backend/preprocessing/textbounding/outputwords/Text Detection.jpg", orig)
+    cv2.imwrite("preprocessing/textbounding/outputwords/Text Detection.jpg", orig)
     cv2.waitKey(0)
     
     return
@@ -167,7 +167,7 @@ def cropWords(imagePath, minConfidence=0.5, width=1280, height=1280):
 def cropCharacters(imagePath):    
     # Create output directory
     file_name, file_ext = os.path.splitext(os.path.basename(imagePath))
-    os.mkdir('./backend/preprocessing/textbounding/outputchars/'+file_name)
+    os.mkdir('preprocessing/textbounding/outputchars/'+file_name)
     
     # Load the image
     img = cv2.imread(imagePath, cv2.IMREAD_GRAYSCALE)
@@ -181,15 +181,17 @@ def cropCharacters(imagePath):
 
     contours, _ = cv2.findContours(binary_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
-    i=len(contours)
+    contours = sorted(contours, key=lambda c: cv2.boundingRect(c)[0])
+    
+    i=0
     for contour in contours:
-        i-=1
+        i+=1
         x, y, w, h = cv2.boundingRect(contour)
         # Crop out the character using the bounding box coordinates
         character_img = img[y:y+h, x:x+w]
         
         # Add white padding around letter as it is cropped with no margin
-        character_img = cv2.copyMakeBorder(character_img, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=[255, 255, 255])
-        cv2.imwrite('./backend/preprocessing/textbounding/outputchars/'+file_name+'/'+str(i)+file_ext, character_img)
+        character_img = cv2.copyMakeBorder(character_img, 8, 8, 8, 8, cv2.BORDER_CONSTANT, value=[255, 255, 255])
+        cv2.imwrite('preprocessing/textbounding/outputchars/'+file_name+'/'+str(i)+file_ext, character_img)
         
     return
