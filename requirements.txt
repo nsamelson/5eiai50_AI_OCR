@@ -9,3 +9,5 @@ matplotlib
 imutils
 fitz
 PyMuPDF
+firebase_admin
+tqdm
