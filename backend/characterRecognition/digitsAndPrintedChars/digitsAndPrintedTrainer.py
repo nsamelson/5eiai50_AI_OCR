@@ -7,12 +7,12 @@ from keras.layers.convolutional import Conv2D
 from keras.utils import np_utils
 from sklearn.model_selection import train_test_split
 
-labels = ['0','1','2','3','4','5','6','7','8','9',
-    'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
-    'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
+# labels = ['0','1','2','3','4','5','6','7','8','9',
+#     'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
+#     'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
 
 # import data
-dataset = pd.read_csv("backend/training/combinedDigitsAndPrinted.csv").astype('float32')
+dataset = pd.read_csv("characterRecognition/datasets/newDigitsAndPrinted.csv").astype('float32')
 dataset.rename(columns={'0':'label'}, inplace=True)
 
 # Splite data the X - Our data , and y - the prdict label
@@ -60,12 +60,12 @@ model.add(Dense(256, activation = "relu"))
 model.add(Dropout(0.5))
 
 
-model.add(Dense(62, activation = "softmax"))
+model.add(Dense(36, activation = "softmax"))
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 # Parameters to train the model
-epochs = 20 # iterations to go through the entire model
+epochs = 10 # iterations to go through the entire model
 batch_size = 256 # number of samples per batch
 
 
@@ -81,4 +81,4 @@ scores = model.evaluate(x_test,y_test, verbose=0)
 print("CNN Score:",scores[1])
 
 # save the model
-model.save('backend/models/digitsAndPrinted.model')
+model.save('models/newDigitsAndPrinted.model')
