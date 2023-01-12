@@ -37,8 +37,6 @@ def processData():
        
    # Get url of picture
    items = request.get_json()
-   print("Got following content : ")
-   print(items)
    imageName = items["img"]
    imageUrl = items["url"]
    folderName = items["folder"]
@@ -46,6 +44,7 @@ def processData():
    # Create folder if not existing
    empty.createFolder("temp")
    
+   # Download image from bucket
    blob = bucket.blob("processed/{}/{}".format(folderName,imageName))
    blob.download_to_filename("temp/"+imageName) 
 
@@ -55,11 +54,10 @@ def processData():
    else :
       newImageName = imageName
    
+   # Preprocess
    prep.prepareCharacters("temp/"+newImageName)
 
-   #    - make bounding boxes in 28*28px
-   # TODO: iterative call the processing program (which will loop through every bouding box and send it to model)
-   # TODO: call the post processing program which will send back a json
+   # Predict words
    output = process.predict()
 
    # Send the json to firebase/realtime database in a folder with its corresponding image
@@ -69,16 +67,14 @@ def processData():
       'url': imageUrl,
       'content':output
    })
-   # TODO: send back a success response!
 
    # Empty temp folder
    empty.empty("temp")
    
+   # Send response
    response = jsonify({'success': 'The image has been processed!!!'})
    return response
 
 
 if __name__ == '__main__':
-   # prep.prepareCharacters("temp/PRINTECAM_canon3320_v1self_ecam_be_0752_001_page-0001.jpg")
-   
    app.run()

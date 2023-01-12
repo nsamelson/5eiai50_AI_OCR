@@ -1,12 +1,15 @@
 import numpy as np
 import cv2
-
+from tqdm import tqdm
 import tensorflow as tf
 import os
 
 
 
 def predict():
+
+    print("[INFO] Predicting the characters")
+
     # load the model
     model = tf.keras.models.load_model('models/digitsAndPrinted.model')
     output_labels = ['0','1','2','3','4','5','6','7','8','9',
@@ -14,12 +17,12 @@ def predict():
         'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'
     ]
     
-    # create var
+    # create vars
     output = {}
 
-    # while os.path.isdir(f"preprocessing/textbounding/outputchars/{wordNumber}"):
-    for word in os.listdir(f"preprocessing/textbounding/outputchars/"):
+    for word in tqdm(os.listdir(f"preprocessing/textbounding/outputchars/")):
         index = int(word) - 1
+
         
         outputWord = []
         for char in os.listdir(f"preprocessing/textbounding/outputchars/{word}"):
@@ -31,5 +34,6 @@ def predict():
             outputWord.append(output_labels[np.argmax(prediction)])
         
         output[index] = "".join(outputWord)
+        
     return output
 
