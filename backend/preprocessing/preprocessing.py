@@ -5,7 +5,7 @@ import preprocessing.textbounding.textBounding as tb
 def prepareCharacters(imagePath):
     # delete output folder
     try:
-        shutil.rmtree('./backend/preprocessing/textbounding/outputchars')
+        shutil.rmtree('./preprocessing/textbounding/outputchars')
     except Exception as e:
         do = "nothing"
 
@@ -13,15 +13,16 @@ def prepareCharacters(imagePath):
     uncreated = 1
     while (uncreated):
         try:
-            os.mkdir('./backend/preprocessing/textbounding/outputchars')
+            os.mkdir('./preprocessing/textbounding/outputchars')
             uncreated = 0
         except Exception as e:
             do = "nothing"
     
     tb.cropWords(imagePath)
 
-    for word in os.listdir('./backend/preprocessing/textbounding/outputwords'):
-        tb.cropCharacters('./backend/preprocessing/textbounding/outputwords/'+word)
+    for word in os.listdir('./preprocessing/textbounding/outputwords'):
+        if word != 'Text Detection.jpg':
+            tb.cropCharacters('./preprocessing/textbounding/outputwords/'+word)
 
     return
 
