@@ -2,7 +2,7 @@
 AI project to transcribe written characters into text
 
 ## Introduction
-This project is a webapp that is capable of producing machine-readable text frome scanned documents in image (png, jpg, etc.) or pdf format.
+This project is a webapp that is capable of producing machine-readable text from scanned documents in image (png, jpg, etc.) or pdf format.
 It uses different techniques and technologies, such as machine learning, computer vision and web/mobile functionalities.
 
 ## Architecture
