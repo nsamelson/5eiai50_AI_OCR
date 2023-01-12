@@ -99,7 +99,7 @@ def cropWords(imagePath, minConfidence=0.5, width=1280, height=1280):
 
     # delete output folder
     try:
-        shutil.rmtree('./backend/preprocessing/textbounding/output')
+        shutil.rmtree('./backend/preprocessing/textbounding/outputwords')
     except Exception as e:
         do = "nothing"
 
@@ -107,7 +107,7 @@ def cropWords(imagePath, minConfidence=0.5, width=1280, height=1280):
     uncreated = 1
     while (uncreated):
         try:
-            os.mkdir('./backend/preprocessing/textbounding/output')
+            os.mkdir('./backend/preprocessing/textbounding/outputwords')
             uncreated = 0
         except Exception as e:
             do = "nothing"
@@ -155,26 +155,41 @@ def cropWords(imagePath, minConfidence=0.5, width=1280, height=1280):
 
     for img in croppedList:
         roi = temp_image[img.startY:img.endY, img.startX:img.endX]
-        cv2.imwrite("./backend/preprocessing/textbounding/output/" + str(count) + ".jpg", roi)
+        cv2.imwrite("./backend/preprocessing/textbounding/outputwords/" + str(count) + ".jpg", roi)
         count = count + 1
 
     # show the output image
-    cv2.imwrite("./backend/preprocessing/textbounding/output/Text Detection.jpg", orig)
+    cv2.imwrite("./backend/preprocessing/textbounding/outputwords/Text Detection.jpg", orig)
     cv2.waitKey(0)
     
     return
 
-def cropCharacters():
+def cropCharacters(imagePath):    
+    # Create output directory
+    file_name, file_ext = os.path.splitext(os.path.basename(imagePath))
+    os.mkdir('./backend/preprocessing/textbounding/outputchars/'+file_name)
+    
     # Load the image
-    img = cv2.imread("image.jpg", cv2.IMREAD_GRAYSCALE)
+    img = cv2.imread(imagePath, cv2.IMREAD_GRAYSCALE)
 
     # Apply thresholding to create a binary image
     _, binary_img = cv2.threshold(img, 128, 255, cv2.THRESH_BINARY_INV)
 
     # Use morphological operations to separate the characters
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3,3))
-    binary_img = cv2.morphologyEx(binary_img, cv2.MORPH_CLOSE, kernel, iterations=2)
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2,2))
+    # binary_img = cv2.morphologyEx(binary_img, cv2.MORPH_OPEN, kernel)
 
-    # Now you can use the binary image to segment the individual characters
-    # You can loop through all the contours and crop the characters out
+    contours, _ = cv2.findContours(binary_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    i=len(contours)
+    for contour in contours:
+        i-=1
+        x, y, w, h = cv2.boundingRect(contour)
+        # Crop out the character using the bounding box coordinates
+        character_img = img[y:y+h, x:x+w]
+        
+        # Add white padding around letter as it is cropped with no margin
+        character_img = cv2.copyMakeBorder(character_img, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=[255, 255, 255])
+        cv2.imwrite('./backend/preprocessing/textbounding/outputchars/'+file_name+'/'+str(i)+file_ext, character_img)
+        
     return
